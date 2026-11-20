@@ -8,17 +8,19 @@ import Testimonials from "@/components/Testimonials";
 import Faq from "@/components/Faq";
 import CTA from "@/components/CTA";
 import Footer from "@/components/Footer";
+import VideoReveal from "@/components/VideoReveal";
 
 export default function Home() {
   return (
-    <main className="relative overflow-x-hidden">
+   <main className="relative overflow-x-clip">
       <Navbar />
       <Hero />
       <Categories />
       <About />
+       <FeaturedProducts />
       <WhyChoose />
-      <FeaturedProducts />
       <Testimonials />
+      <VideoReveal />
       <Faq />
       <CTA />
       <Footer />

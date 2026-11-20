@@ -5,53 +5,78 @@ import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import Img, { pexels } from "@/components/ui/Img";
 import Flask from "@/components/ui/Flask";
+import Molecule from "./ui/Molecule";
+
+const gridPattern = {
+  backgroundImage:
+    "linear-gradient(rgba(255,255,255,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.05) 1px, transparent 1px)",
+  backgroundSize: "44px 44px",
+};
 
 export default function CTA() {
   return (
-    <section id="contact" className="relative px-[3.5%] py-8">
+    <section id="contact">
       <Reveal direction="scale" duration={0.9}>
-        <div className="relative mx-auto flex max-w-[1380px] flex-col items-start gap-6 overflow-hidden rounded-[44px] bg-gradient-to-r from-brand-900 via-brand-800 to-brand-600 px-8 py-8 shadow-glass md:min-h-[120px] md:flex-row md:items-center md:justify-between lg:rounded-[60px] lg:px-14">
-          {/* hills / waves */}
+        <div className="relative mx-auto flex flex-col items-start gap-8 overflow-hidden border border-white/10 bg-[#061a40] px-8 py-12 shadow-glass md:min-h-[160px] md:flex-row md:items-center md:justify-between lg:px-14">
+          <div className="absolute inset-0 bg-gradient-to-r from-[#0a2e6e] via-[#0d3a86] to-[#155aad]" />
+          <div className="absolute -left-24 -top-32 h-[340px] w-[340px]  bg-[#4aa3ff]/20 blur-[110px]" />
+          <div className="absolute -bottom-36 right-[22%] h-[300px] w-[300px] bg-[#d4a537]/15 blur-[120px]" />
+          <div className="absolute inset-0 opacity-60" style={gridPattern} aria-hidden="true" />
+
+          <div className="absolute inset-x-10 top-0 h-[3px] bg-gradient-to-r from-transparent via-[#d4a537] to-transparent" />
+
           <svg
             className="pointer-events-none absolute inset-0 h-full w-full"
-            viewBox="0 0 1380 120"
+            viewBox="0 0 1380 160"
             preserveAspectRatio="none"
             aria-hidden="true"
           >
-            <path d="M0 80 C220 30 420 120 700 70 S1150 20 1380 70 L1380 120 L0 120 Z" fill="rgba(255,255,255,0.07)" />
-            <path d="M0 100 C260 60 520 120 820 92 S1200 60 1380 96 L1380 120 L0 120 Z" fill="rgba(255,255,255,0.08)" />
+            <path d="M0 105 C220 55 420 145 700 95 S1150 45 1380 95 L1380 160 L0 160 Z" fill="rgba(255,255,255,0.10)" />
+            <path d="M0 130 C260 90 520 150 820 122 S1200 90 1380 126 L1380 160 L0 160 Z" fill="rgba(255,255,255,0.12)" />
           </svg>
 
           {/* moving light */}
           <motion.div
             animate={{ x: ["-30%", "140%"] }}
             transition={{ duration: 8, repeat: Infinity, ease: "linear" }}
+            aria-hidden="true"
             className="pointer-events-none absolute inset-y-0 w-40 -skew-x-12 bg-white/10 blur-xl"
           />
 
           {/* factory image fading into the band */}
           <div
-            className="pointer-events-none absolute inset-y-0 right-0 hidden w-[34%] lg:block"
+            aria-hidden="true"
+            className="pointer-events-none absolute inset-y-0 right-0 hidden w-full lg:block"
             style={{
               WebkitMaskImage: "linear-gradient(to right, transparent, black 45%)",
               maskImage: "linear-gradient(to right, transparent, black 45%)",
             }}
           >
-            <Img src={pexels(16102539, 900)} alt="Factory at dusk" className="h-full w-full opacity-80" />
-            <div className="absolute inset-0 bg-gradient-to-t from-brand-800/50 to-brand-600/20" />
+            <Img src={pexels(16102539, 900)} alt="Factory at dusk" className="h-full w-full opacity-90" />
+            <div className="absolute inset-0 bg-gradient-to-t from-[#0a2e6e]/60 to-[#155aad]/20" />
           </div>
 
           {/* left: orb + copy */}
-          <div className="relative flex items-center gap-5">
+          <div className="relative flex items-center gap-6">
             <motion.div
               animate={{ y: [0, -7, 0] }}
               transition={{ duration: 4, repeat: Infinity, ease: "easeInOut" }}
-              className="flex h-[88px] w-[88px] shrink-0 items-center justify-center rounded-full border border-white/40 bg-white/10 shadow-[0_0_44px_rgba(143,208,247,0.7)] backdrop-blur"
+              aria-hidden="true"
+              className="relative flex h-[92px] w-[92px] shrink-0 items-center justify-center"
             >
-              <Flask className="h-[62px] w-[44px]" />
+              <motion.span
+                animate={{ rotate: 360 }}
+                transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
+                className="absolute -inset-2"
+              />
+              <Molecule/>
             </motion.div>
             <div className="text-white">
-              <h3 className="font-serif text-[22px] font-semibold leading-tight md:text-[1.7vw] md:leading-tight">
+              <p className="mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#e6c778]">
+                <span className="h-px w-6 bg-[#d4a537]" />
+                Let&apos;s work together
+              </p>
+              <h3 className="font-serif text-[22px] font-semibold leading-tight md:text-[26px] lg:text-[30px]">
                 Ready to Partner with Neelgiri Chemicals?
               </h3>
               <p className="mt-1 text-[14px] text-white/85">
@@ -62,13 +87,17 @@ export default function CTA() {
 
           {/* button */}
           <motion.a
-            href="#contact"
+            href="/contact"
             whileHover={{ scale: 1.07 }}
             whileTap={{ scale: 0.96 }}
-            animate={{ boxShadow: ["0 0 0 0 rgba(190,230,255,0.6)", "0 0 0 16px rgba(190,230,255,0)"] }}
-            transition={{ boxShadow: { duration: 1.8, repeat: Infinity } }}
-            className="relative inline-flex items-center gap-2 rounded-full bg-gradient-to-b from-[#eaf7ff] to-[#86cdf7] px-8 py-3.5 text-[14px] font-semibold text-brand-900 shadow-soft lg:mr-[26%]"
+            className="relative inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-b from-[#e6c778] to-[#c9972f] px-8 py-3.5 text-[14px] font-semibold text-[#0a2e6e] shadow-[0_10px_24px_rgba(212,165,55,0.35)]"
           >
+            <motion.span
+              aria-hidden="true"
+              animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
+              transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
+              className="absolute inset-0 rounded-full border-2 border-[#e6c778]"
+            />
             Contact Us <ArrowRight className="h-4 w-4" />
           </motion.a>
         </div>

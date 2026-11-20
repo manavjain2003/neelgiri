@@ -6,10 +6,10 @@ import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 
 const links = [
-  { label: "Home", id: "home" },
-  { label: "About Us", id: "about" },
-  { label: "Products", id: "products", dropdown: true },
-  { label: "Contact", id: "contact" },
+  { label: "Home", id: "home" , link : "/" },
+  { label: "About Us", id: "about" , link : "/about" },
+  { label: "Products", id: "products", link : "/products" , dropdown: true },
+  { label: "Contact", id: "contact" , link : "/contact"},
 ];
 
 export default function Navbar() {
@@ -46,12 +46,12 @@ export default function Navbar() {
       initial={{ y: -90, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className={`fixed inset-x-0 top-0 z-50 transition-all duration-300 ${
-        scrolled
-          ? "bg-gradient-to-r from-brand-200/90 via-white/85 to-white/80 shadow-[0_10px_30px_-14px_rgba(33,131,199,0.35)] backdrop-blur-xl"
-          : "bg-transparent"
-      }`}
-    >
+      className={`sticky top-0 z-50 transition-all duration-300 ${
+    scrolled
+      ? "bg-gradient-to-r from-brand-200/90 via-white/85 to-white/80 shadow-[0_10px_30px_-14px_rgba(33,131,199,0.35)] backdrop-blur-xl"
+      : "bg-transparent"
+  }`}
+>
       <div className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between px-[5%] lg:px-[7%]">
         <Logo />
 
@@ -59,7 +59,7 @@ export default function Navbar() {
           {links.map((l) => (
             <a
               key={l.label}
-              href={`#${l.id}`}
+              href={`${l.link}`}
               className={`relative flex items-center gap-1 py-1 text-[15px] xl:text-[16px] font-semibold transition-colors ${
                 active === l.id
                   ? "text-brand-900"
