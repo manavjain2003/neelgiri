@@ -79,7 +79,7 @@ export default function Footer() {
             {/* Brand */}
             <div>
               <div className="inline-block h-40 -m-6">
-               <img src="/logo.webp" alt="Neelgiri" width={200} height={120} />
+               <img src="/logo_.png" alt="Neelgiri" width={200} height={120} />
               </div>
               <p className="mt-4 max-w-[280px] text-[14px] leading-relaxed text-white/70">
                 Since 2004, Neelgiri Chemicals Pvt. Ltd. has been an ISO-certified manufacturer delivering reliable, high-quality chemical solutions with a focus on innovation and customer value.

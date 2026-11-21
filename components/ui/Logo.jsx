@@ -22,8 +22,8 @@ export function FlaskMark({ className = "h-11 w-11" }) {
 
 export default function Logo({ className = "" }) {
   return (
-    <a href="#home" className="mt-10 flex item-center justify-center" >
-     <img src="/logo.webp" alt="Neelgiri" width={200} height={120} />
+    <a href="#home" className="flex item-center justify-center" >
+     <img src="/logo_.png" alt="Neelgiri" width={200} height={120} />
     </a>
   );
 }

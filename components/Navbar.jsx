@@ -6,10 +6,10 @@ import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
 
 const links = [
-  { label: "Home", id: "home" , link : "/" },
-  { label: "About Us", id: "about" , link : "/about" },
-  { label: "Products", id: "products", link : "/products" , dropdown: true },
-  { label: "Contact", id: "contact" , link : "/contact"},
+  { label: "Home", id: "home", link: "/" },
+  { label: "About Us", id: "about", link: "/about" },
+  { label: "Products", id: "products", link: "/products", dropdown: true },
+  { label: "Contact", id: "contact", link: "/contact" },
 ];
 
 export default function Navbar() {
@@ -27,9 +27,7 @@ export default function Navbar() {
   useEffect(() => {
     const obs = new IntersectionObserver(
       (entries) =>
-        entries.forEach(
-          (e) => e.isIntersecting && setActive(e.target.id)
-        ),
+        entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
       { rootMargin: "-45% 0px -50% 0px" }
     );
 
@@ -46,12 +44,12 @@ export default function Navbar() {
       initial={{ y: -90, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }}
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-    scrolled
-      ? "bg-gradient-to-r from-brand-200/90 via-white/85 to-white/80 shadow-[0_10px_30px_-14px_rgba(33,131,199,0.35)] backdrop-blur-xl"
-      : "bg-transparent"
-  }`}
->
+      className={`sticky top-0 z-50 transition-all duration-500 ${
+        scrolled
+          ? "bg-gradient-to-r from-[#0a1628]/95 via-[#132337]/90 to-[#1a2f4a]/85 shadow-[0_8px_32px_-12px_rgba(10,22,40,0.6)] backdrop-blur-xl border-b border-white/10"
+          : "bg-gradient-to-r from-[#0a1628]/80 via-[#132337]/70 to-[#1a2f4a]/60 backdrop-blur-md"
+      }`}
+    >
       <div className="mx-auto flex h-[82px] max-w-[1440px] items-center justify-between px-[5%] lg:px-[7%]">
         <Logo />
 
@@ -59,23 +57,21 @@ export default function Navbar() {
           {links.map((l) => (
             <a
               key={l.label}
-              href={`${l.link}`}
+              href={l.link}
               className={`relative flex items-center gap-1 py-1 text-[15px] xl:text-[16px] font-semibold transition-colors ${
                 active === l.id
-                  ? "text-brand-900"
-                  : "text-brand-900/80 hover:text-brand-600"
+                  ? "text-white"
+                  : "text-white/80 hover:text-white"
               }`}
             >
               {l.label}
 
-              {l.dropdown && (
-                <ChevronDown className="h-4 w-4" />
-              )}
+              {l.dropdown && <ChevronDown className="h-4 w-4" />}
 
               {active === l.id && (
                 <motion.span
                   layoutId="nav-underline"
-                  className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full bg-gradient-to-r from-brand-700 to-brand-300"
+                  className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full bg-gradient-to-r from-white to-white/60"
                 />
               )}
             </a>
@@ -88,7 +84,7 @@ export default function Navbar() {
             href="#contact"
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.96 }}
-            className="hidden items-center gap-2 rounded-full bg-brand-900 px-6 py-3 text-[14px] font-semibold text-white shadow-soft sm:inline-flex"
+            className="hidden items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[14px] font-semibold text-white shadow-lg backdrop-blur-sm hover:bg-white/25 sm:inline-flex bg-brand-500" 
           >
             Get a Quote
             <ArrowRight className="h-4 w-4" />
@@ -97,13 +93,9 @@ export default function Navbar() {
           <button
             aria-label="Toggle menu"
             onClick={() => setOpen(!open)}
-            className="rounded-lg p-2 text-brand-900 lg:hidden"
+            className="rounded-lg p-2 text-white lg:hidden"
           >
-            {open ? (
-              <X className="h-6 w-6" />
-            ) : (
-              <Menu className="h-6 w-6" />
-            )}
+            {open ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
           </button>
         </div>
       </div>
@@ -115,7 +107,7 @@ export default function Navbar() {
             initial={{ height: 0, opacity: 0 }}
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
-            className="overflow-hidden border-t border-brand-100 bg-gradient-to-b from-brand-200/95 via-white/95 to-white/95 backdrop-blur-xl lg:hidden"
+            className="overflow-hidden border-t border-white/10 bg-gradient-to-b from-[#0a1628]/95 via-[#132337]/95 to-[#1a2f4a]/95 backdrop-blur-xl lg:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-4">
               {links.map((l, i) => (
@@ -126,7 +118,7 @@ export default function Navbar() {
                   initial={{ x: -20, opacity: 0 }}
                   animate={{ x: 0, opacity: 1 }}
                   transition={{ delay: i * 0.04 }}
-                  className="rounded-lg px-3 py-3 text-base font-semibold text-brand-900 hover:bg-brand-50"
+                  className="rounded-lg px-3 py-3 text-base font-semibold text-white/90 hover:bg-white/10"
                 >
                   {l.label}
                 </motion.a>
@@ -135,7 +127,7 @@ export default function Navbar() {
               <a
                 href="#contact"
                 onClick={() => setOpen(false)}
-                className="btn-primary mt-2 justify-center text-base"
+                className="mt-2 flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm bg-brand-500"
               >
                 Get a Quote
                 <ArrowRight className="h-5 w-5" />
