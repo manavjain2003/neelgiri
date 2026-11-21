@@ -1,32 +1,47 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { motion } from "framer-motion";
 import {
   ArrowLeft,
   ArrowRight,
   FlaskConical,
   Globe,
-  Lightbulb,
   ShieldCheck,
 } from "lucide-react";
-import { pexels } from "@/components/ui/Img";
+import Img from "@/components/ui/Img";
+import { getProductBySlug } from "@/lib/products";
+import { industries } from "@/lib/company";
 
 const HERO_IMAGE = "/all_products_2.png";
 const MOLECULE_IMAGE = "/images/molecule.png";
 
-const categories = [
-  { name: "Industrial\nChemicals", desc: "Bulk chemicals for large-scale manufacturing.", img: pexels(2786527, 500) }, // drums / industrial
-  { name: "Specialty\nChemicals", desc: "Performance-engineered for niche applications.", img: pexels(8917946, 500) }, // lab / specialty
-  { name: "Fine\nChemicals", desc: "High-purity compounds for precise formulations.", img: pexels(7110136, 500) }, // white powder
-  { name: "Polymers &\nResins", desc: "Durable materials for coatings and composites.", img: pexels(7722683, 500) }, // blue material
-  { name: "Solvents", desc: "Reliable solvents for cleaning and processing.", img: pexels(8392533, 500) }, // flask / liquids
+/* Hand-picked products shown in the carousel (all have photos). */
+const FEATURED = [
+  "dawn-r2195-road-marking-titanium-dioxide",
+  "hot-applied-road-marking-paint",
+  "insta-reflecto-bs6088b-road-marking-glass-beads",
+  "c9-aromatic-hydrocarbon-resin",
+  "fusion-grade-zinc-stearate",
+  "650-kg-fully-automatic-road-marking-machine",
 ];
 
+const featured = FEATURED.map(getProductBySlug)
+  .filter(Boolean)
+  .map((p) => ({
+    slug: p.slug,
+    name: p.name,
+    desc: p.categoryLabel,
+    img: p.images,
+    href: `/products/${p.slug}`,
+  }));
+
 const features = [
-  { icon: ShieldCheck, title: "Premium Quality", text: "Consistent quality, assured performance." },
-  { icon: Lightbulb, title: "Advanced Formulations", text: "Tailored solutions for modern industries." },
-  { icon: Globe, title: "Global Standards", text: "Meeting international quality benchmarks." },
+  { icon: ShieldCheck, title: "ISO-Certified", text: "Consistent quality, assured performance." },
+  { icon: FlaskConical, title: "280+ Raw Materials", text: "Titanium dioxide, resins, stearates, glass beads and more." },
+  { icon: Globe, title: `${industries.length} Industries Served`, text: "From paints and plastics to road construction." },
 ];
 
 
@@ -78,7 +93,7 @@ function HeroArt() {
         />
         <motion.img
           src={HERO_IMAGE}
-          alt="Chemical molecules, laboratory glassware and powder"
+          alt="Chemical powders, laboratory glassware and molecules"
           animate={{ scale: [1.04, 1.08, 1.04] }}
           transition={{ duration: 8, repeat: Infinity, ease: "easeInOut" }}
           className="absolute inset-0 h-full w-full object-fill"
@@ -111,9 +126,10 @@ function HeroArt() {
 
 
 export default function FeaturedProducts() {
-  const [active, setActive] = useState(1);
+  const router = useRouter();
+  const [active, setActive] = useState(0);
   const [paused, setPaused] = useState(false);
-  const total = categories.length;
+  const total = featured.length;
 
   const go = (d) => setActive((a) => (a + d + total) % total);
 
@@ -125,7 +141,7 @@ export default function FeaturedProducts() {
 
   return (
     <section
-      id="products"
+      id="featured-products"
       className="relative isolate overflow-hidden bg-white"
     >
 
@@ -154,26 +170,27 @@ export default function FeaturedProducts() {
             </div>
 
             <h2 className="mt-7 font-serif text-[38px] font-semibold leading-[1.1] tracking-tight text-[#0f2a5c] sm:text-[48px] lg:text-[clamp(34px,3.3vw,52px)]">
-              <span className="block whitespace-nowrap">Innovative Chemical</span>
-              <span className="block whitespace-nowrap">Solutions for a</span>
-              <em className="block whitespace-nowrap font-medium italic text-[#c8921f]">Better Tomorrow</em>
+              <span className="block whitespace-nowrap">Performance Chemicals</span>
+              <span className="block whitespace-nowrap">&amp; Materials for</span>
+              <em className="block whitespace-nowrap font-medium italic text-[#c8921f]">Every Industry</em>
             </h2>
 
             <p className="mt-6 max-w-[420px] text-[16px] leading-relaxed text-[#5b6b85] lg:text-[17px]">
-              High-performance chemicals designed for diverse industrial applications.
+              Rutile titanium dioxide, resins, stearates, glass beads and road-marking materials – supplied from New Delhi since 2004.
             </p>
 
             <div className="mt-8 flex items-center gap-5">
-              <motion.a
-                href="#products"
-                whileHover={{ scale: 1.04 }}
-                className="inline-flex items-center gap-4 rounded-full border border-[#d3b76e] bg-[#0a2e6e] py-2 pl-7 pr-2 text-[15px] font-semibold text-white shadow-[0_12px_30px_rgba(30,80,180,0.28)] transition-colors hover:bg-[#123f91]"
-              >
-                Explore Our Products
-                <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#0a2e6e]">
-                  <ArrowRight className="h-4 w-4" />
-                </span>
-              </motion.a>
+              <motion.div whileHover={{ scale: 1.04 }}>
+                <Link
+                  href="/products"
+                  className="inline-flex items-center gap-4 rounded-full border border-[#d3b76e] bg-[#0a2e6e] py-2 pl-7 pr-2 text-[15px] font-semibold text-white shadow-[0_12px_30px_rgba(30,80,180,0.28)] transition-colors hover:bg-[#123f91]"
+                >
+                  Explore Our Products
+                  <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#0a2e6e]">
+                    <ArrowRight className="h-4 w-4" />
+                  </span>
+                </Link>
+              </motion.div>
               <span className="hidden h-px w-32 bg-[#d6b86b]/80 md:block" />
             </div>
           </motion.div>
@@ -221,7 +238,7 @@ export default function FeaturedProducts() {
         >
           <div className="flex items-center gap-3">
             <button
-              aria-label="Previous category"
+              aria-label="Previous product"
               onClick={() => go(-1)}
               className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-[#d3b76e]/70 bg-white text-[#0a2e6e] shadow-[0_10px_24px_-10px_rgba(30,80,180,0.5)] transition hover:scale-105"
             >
@@ -229,13 +246,13 @@ export default function FeaturedProducts() {
             </button>
 
             <div className="flex min-w-0 flex-1 items-stretch gap-3 overflow-x-auto py-2 [scrollbar-width:none] lg:overflow-visible">
-              {categories.map((c, i) => {
+              {featured.map((c, i) => {
                 const isActive = i === active;
                 return (
                   <motion.button
-                    key={c.name}
+                    key={c.slug}
                     layout
-                    onClick={() => setActive(i)}
+                    onClick={() => (isActive ? router.push(c.href) : setActive(i))}
                     transition={{ type: "spring", stiffness: 260, damping: 28 }}
                     className={`group relative h-[260px] shrink-0 overflow-hidden rounded-[30px] text-left ${
                       isActive
@@ -243,10 +260,9 @@ export default function FeaturedProducts() {
                         : "w-[240px] border border-[#dbe6f5] shadow-[0_16px_32px_-18px_rgba(30,80,180,0.55)] lg:w-auto lg:flex-1"
                     }`}
                   >
-                    <img
+                    <Img
                       src={c.img}
-                      alt=""
-                      loading="lazy"
+                      alt={c.name}
                       className="absolute inset-0 h-full w-full object-cover transition duration-700 group-hover:scale-110"
                     />
                     <div
@@ -275,7 +291,7 @@ export default function FeaturedProducts() {
                       <div className={`mb-3 h-[2px] rounded-full bg-[#d6b86b] ${isActive ? "w-14" : "w-8"}`} />
                       <p
                         className={`whitespace-pre-line font-serif font-semibold leading-[1.1] text-white ${
-                          isActive ? "text-[30px]" : "text-[21px]"
+                          isActive ? "text-[24px]" : "text-[18px]"
                         }`}
                       >
                         {c.name}
@@ -286,7 +302,7 @@ export default function FeaturedProducts() {
                             {c.desc}
                           </p>
                           <p className="mt-3 inline-flex items-center gap-2 text-[12px] font-bold uppercase tracking-[0.18em] text-[#e6c778]">
-                            Explore range
+                            View product
                             <ArrowRight className="h-3.5 w-3.5" />
                           </p>
                         </>
@@ -298,7 +314,7 @@ export default function FeaturedProducts() {
             </div>
 
             <button
-              aria-label="Next category"
+              aria-label="Next product"
               onClick={() => go(1)}
               className="flex h-[60px] w-[60px] shrink-0 items-center justify-center rounded-full border border-[#d3b76e]/70 bg-white text-[#0a2e6e] shadow-[0_10px_24px_-10px_rgba(30,80,180,0.5)] transition hover:scale-105"
             >

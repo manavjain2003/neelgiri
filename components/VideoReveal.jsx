@@ -208,7 +208,7 @@ const buildMound = (R, H, ts) => {
 
 export default function VideoReveal({
   videoSrc = "/Titanium_dioxide_powder_pouring_d264ca45.mp4",
-  poster = "/chemical-powder-poster.jpg",
+  poster = "/images/hero_1.png",
   scrollDistanceVh = 300,
   holdVh = 150, // extra scroll where the video stays pinned and fully visible
   className = "",

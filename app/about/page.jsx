@@ -2,58 +2,54 @@ import Link from "next/link";
 import {
   ArrowRight,
   CalendarDays,
-  Cog,
-  Crosshair,
-  Gem,
-  Globe,
+  FlaskConical,
+  Handshake,
   Headphones,
-  Package,
+  Layers,
   ShieldCheck,
   Users,
 } from "lucide-react";
 import PageHero from "@/components/ui/PageHero";
 import { categories } from "@/lib/products";
+import { company, industries, yearsInBusiness } from "@/lib/company";
 import VisionMission from "@/components/VisionMission";
 import CTA from "@/components/CTA";
 import Story from "@/components/Story";
 
 export const metadata = {
   title: "About Us",
-  description:
-    "Ci Laser Cutting International supplies high-performance laser cutting, engraving and marking machines backed by dedicated support.",
+  description: `${company.name} is an ISO-certified chemical solutions supplier operating since ${company.founded} – titanium dioxide, resins, stearates, glass beads, road marking materials and 280+ raw materials.`,
 };
 
 const stats = [
-  { icon: CalendarDays, value: "10+", label: "Years of Experience" },
-  { icon: Users, value: "500+", label: "Happy Clients" },
-  { icon: Package, value: "1000+", label: "Machines Installed" },
-  { icon: Globe, value: "25+", label: "Countries Served" },
+  { icon: CalendarDays, value: `${yearsInBusiness()}+`, label: "Years of Experience" },
+  { icon: FlaskConical, value: "280+", label: "Raw Materials" },
+  { icon: Users, value: `${industries.length}`, label: "Industries Served" },
+  { icon: Layers, value: `${categories.length}`, label: "Core Product Categories" },
 ];
 
 const values = [
   {
-    icon: Crosshair,
-    title: "Precision first",
-    text: "Every machine we supply is chosen for accurate, repeatable results on the materials you actually work with.",
+    icon: ShieldCheck,
+    title: "Quality first",
+    text: "ISO-certified processes and carefully sourced grades keep performance consistent from one order to the next.",
   },
   {
-    icon: Cog,
-    title: "Built to last",
-    text: "Robust construction and proven components keep downtime low and maintenance simple.",
+    icon: FlaskConical,
+    title: "Wide range, one supplier",
+    text: "Pigments, resins, stearates, glass beads, road-marking paint and machines – sourced and supplied together.",
   },
   {
-    icon: Gem,
-    title: "Advanced technology",
-    text: "Fiber and CO2 laser systems across cutting, engraving and marking, from workshop to production scale.",
+    icon: Handshake,
+    title: "Built on trust",
+    text: "Long-term relationships with manufacturers across paint, plastics, adhesives, rubber and infrastructure.",
   },
   {
     icon: Headphones,
-    title: "Support that stays",
-    text: "From choosing a machine to installation and after-sales help, our team is a call or message away.",
+    title: "Responsive support",
+    text: "From grade selection to quotation and delivery, our team is a call, WhatsApp or email away.",
   },
 ];
-
-const offerings = categories.filter((category) => category.id !== "all");
 
 export default function AboutPage() {
   return (
@@ -62,8 +58,8 @@ export default function AboutPage() {
         eyebrow="Who we are"
         title="About"
         highlight="Us"
-        description="We help manufacturers, workshops and jewellers cut, engrave and mark with confidence, with the right laser machine and the support to keep it running."
-        bannerImage="/about_hero_.png"
+        description="Delivering quality, driving innovation and building trust – chemical solutions for industry, supplied from New Delhi since 2004."
+        bannerImage="/images/hero_1.png"
       />
 
       {/* Intro */}
@@ -71,29 +67,29 @@ export default function AboutPage() {
         <div className="grid items-center gap-10 lg:grid-cols-2 lg:gap-14">
           <div className="relative overflow-hidden rounded-[22px] border border-[#dce6f2] bg-white p-3 shadow-[0_18px_40px_rgba(20,75,150,0.08)]">
             <img
-              src="/about_.png"
-              alt="Laser cutting head cutting a metal sheet"
+              src="/images/hero.png"
+              alt="Chemical plant with titanium dioxide and pigment powders"
               loading="lazy"
               className="h-full max-h-[460px] w-full rounded-[16px] object-cover"
             />
           </div>
           <div>
             <h2 className="text-[30px] font-extrabold leading-[1.1] tracking-[-0.035em] text-[#102044] sm:text-[38px]">
-              Precision laser solutions,{" "}
+              Chemical solutions,{" "}
               <span className="text-[#0866f5]">backed by people who care</span>
             </h2>
             <div className="mt-5 space-y-4 text-[14px] leading-[1.8] text-[#52627e]">
               <p>
-                Ci Laser Cutting International is a supplier of high-performance
-                laser machines for metal fabrication, sheet cutting, engraving
-                and marking. Our range covers CO2 and fiber laser systems for
-                industries from signage and leather to steel fabrication and
-                jewellery.
+                {company.name} is a global chemical solutions supplier of specialty chemicals, industrial
+                minerals, performance additives and customised raw materials. Operating since {company.founded}, we are
+                an ISO-certified company serving customers across paint, ink and coating, plastics, adhesives,
+                rubber, ceramics, water treatment and road construction.
               </p>
               <p>
-                We focus on matching each customer with the machine that fits
-                their material, output and budget, then standing behind it with
-                installation help and responsive after-sales support.
+                Our range includes rutile titanium dioxide, hydrocarbon resins, stearates, glass beads, starch,
+                thermoplastic road-marking paint and road-marking machines – with 280+ raw materials available in
+                total. We focus on matching each customer with the right grade, volume and price, and standing
+                behind every order.
               </p>
             </div>
             <div className="mt-6 flex flex-wrap gap-3">
@@ -101,13 +97,13 @@ export default function AboutPage() {
                 href="/products"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] bg-[#0866f5] px-5 text-[12px] font-bold text-white transition-colors hover:bg-[#0754d2]"
               >
-                Explore Machines <ArrowRight size={15} />
+                Explore Products <ArrowRight size={15} />
               </Link>
               <Link
                 href="/contact"
                 className="inline-flex min-h-[44px] items-center gap-2 rounded-[10px] border border-[#b9cbe4] bg-white px-5 text-[12px] font-bold text-[#18315b] transition-all hover:border-[#0866f5] hover:bg-[#f2f7ff]"
               >
-                Talk to an Expert
+                Talk to Our Team
               </Link>
             </div>
           </div>
@@ -123,12 +119,8 @@ export default function AboutPage() {
               className="rounded-[15px] border border-[#dce6f2] bg-white p-5 text-center shadow-[0_5px_20px_rgba(20,55,100,0.035)]"
             >
               <Icon size={22} className="mx-auto text-[#0866f5]" />
-              <dd className="mt-3 text-[30px] font-extrabold tracking-[-0.03em] text-[#0c2452]">
-                {value}
-              </dd>
-              <dt className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#8794aa]">
-                {label}
-              </dt>
+              <dd className="mt-3 text-[30px] font-extrabold tracking-[-0.03em] text-[#0c2452]">{value}</dd>
+              <dt className="mt-1 text-[11px] font-bold uppercase tracking-[0.12em] text-[#8794aa]">{label}</dt>
             </div>
           ))}
         </dl>
@@ -153,12 +145,8 @@ export default function AboutPage() {
               <span className="grid h-11 w-11 place-items-center rounded-xl bg-[#eaf2ff] text-[#0866f5]">
                 <Icon size={21} />
               </span>
-              <h3 className="mt-4 text-[16px] font-extrabold tracking-[-0.02em] text-[#101d3d]">
-                {title}
-              </h3>
-              <p className="mt-2 text-[12px] leading-[1.7] text-[#687792]">
-                {text}
-              </p>
+              <h3 className="mt-4 text-[16px] font-extrabold tracking-[-0.02em] text-[#101d3d]">{title}</h3>
+              <p className="mt-2 text-[12px] leading-[1.7] text-[#687792]">{text}</p>
             </article>
           ))}
         </div>
@@ -170,11 +158,11 @@ export default function AboutPage() {
           <h2 className="text-[26px] font-extrabold tracking-[-0.035em] text-[#102044] sm:text-[30px]">
             What we offer
           </h2>
-          <ul className="mt-5 grid gap-3 sm:grid-cols-2">
-            {offerings.map((category) => (
+          <ul className="mt-5 grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+            {categories.map((category) => (
               <li key={category.id}>
                 <Link
-                  href="/products"
+                  href={`/products?category=${category.id}`}
                   className="flex items-center justify-between rounded-[12px] bg-white px-4 py-3.5 text-[13px] font-bold text-[#18315b] transition-colors hover:text-[#0866f5]"
                 >
                   {category.label} <ArrowRight size={15} />
@@ -184,9 +172,10 @@ export default function AboutPage() {
           </ul>
         </div>
       </section>
+
       <Story />
       <VisionMission />
-      <CTA/>
+      <CTA />
     </div>
   );
 }

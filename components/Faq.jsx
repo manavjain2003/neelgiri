@@ -12,24 +12,24 @@ import Reveal from "@/components/ui/Reveal";
 
 const faqs = [
   {
-    q: "What makes Neelgiri Chemicals different?",
-    a: "Our focus on purity, innovation and sustainable processes sets us apart from the rest.",
-    img: "https://images.unsplash.com/photo-1602052577122-f73b9710adba?auto=format&fit=crop&w=800&q=70",
+    q: "What does Neelgiri Chemicals supply?",
+    a: "Rutile titanium dioxide, hydrocarbon resins, stearates, glass beads, thermoplastic road-marking paint, road-marking machines, starch and a wide range of industrial raw materials – 280+ in total.",
+    img: "/images/hero_1.png",
   },
   {
-    q: "Do you offer custom chemical solutions?",
-    a: "Yes — we tailor formulations, grades and packaging to your industry requirements.",
-    img: "https://images.unsplash.com/photo-1578496479531-32e296d5c6e1?auto=format&fit=crop&w=800&q=70",
+    q: "How long has the company been operating?",
+    a: "We have been supplying industry since 2004 and are an ISO-certified chemical solutions supplier based in New Delhi.",
+    img: "/images/why.png",
   },
   {
-    q: "What are your delivery timelines?",
-    a: "Typical delivery is 3–7 business days depending on location and order volume.",
-    img: "https://images.pexels.com/photos/3057960/pexels-photo-3057960.jpeg?auto=compress&cs=tinysrgb&w=800",
+    q: "Can you supply a specific grade or custom requirement?",
+    a: "Yes – tell us the grade, quantity and application and we will confirm availability, packaging and pricing for your requirement.",
+    img: "/all_products_2.png",
   },
   {
     q: "How can I get a quote?",
-    a: "Click 'Get a Quote' or contact us and our team will get back to you within 24 hours.",
-    img: "https://images.pexels.com/photos/18026608/pexels-photo-18026608.jpeg?auto=compress&cs=tinysrgb&w=800",
+    a: "Click 'Get a Quote', call +91 87961 61378, WhatsApp us or email Sales@NeelgiriChemicals.com with your requirement and our team will respond with pricing and availability.",
+    img: "/images/fp.png",
   },
 ];
 
@@ -207,7 +207,7 @@ export default function Faq() {
                     </p>
                   </div>
                   <motion.a
-                    href="#contact"
+                    href="/contact"
                     whileHover={{ scale: 1.04 }}
                     whileTap={{ scale: 0.97 }}
                     className="group relative inline-flex items-center gap-4 rounded-full border border-[#d3b76e] bg-white py-1.5 pl-5 pr-1.5 text-[13px] font-semibold text-[#0a2e6e]"

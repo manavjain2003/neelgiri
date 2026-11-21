@@ -5,37 +5,37 @@ import { ArrowRight, Factory, Handshake, Rocket, Settings } from "lucide-react";
 import Magnetic from "./ui/Magnetic";
 
 const EASE = [0.16, 1, 0.3, 1];
-const FALLBACK_IMG = "/story_.png";
+const FALLBACK_IMG = "/images/hero.png";
 
-/* give each milestone its own photo; missing files fall back to /story_.png */
+/* Only milestones that can be backed by company sources (neelgirichemicals.com / IndiaMART). */
 const timeline = [
   {
-    year: "2015",
+    year: "2004",
     title: "The Beginning",
-    text: "Started with a vision to bring advanced cutting technology to India.",
+    text: "Began operating in New Delhi (as Surya Min Chem), supplying industrial chemicals and minerals to Indian industry.",
     icon: Rocket,
-    image: "/story_2015.png",
+    image: "/images/hero_1.png",
   },
   {
-    year: "2018",
-    title: "Growth",
-    text: "Expanded manufacturing and product range.",
+    year: "TiO\u2082",
+    title: "Pigment Specialists",
+    text: "A deep range of rutile titanium dioxide grades from leading global and Chinese producers.",
     icon: Factory,
-    image: "/story_2018.png",
+    image: "/all_products_2.png",
   },
   {
-    year: "2021",
-    title: "Milestone of Trust",
-    text: "Crossed 500+ machine installations.",
+    year: "Roads",
+    title: "Road Marking Solutions",
+    text: "Thermoplastic paint, glass beads, hydrocarbon resins and marking machines for infrastructure projects.",
     icon: Settings,
-    image: "/story_2021.png",
+    image: "/images/why.png",
   },
   {
-    year: "2026",
-    title: "A Global Partner",
-    text: "A trusted partner for industries across 25+ countries.",
+    year: "280+",
+    title: "A Full Raw-Material Partner",
+    text: "ISO-certified supply of 280+ raw materials across 15 industries.",
     icon: Handshake,
-    image: "/story_2026.png",
+    image: "/images/fp.png",
   },
 ];
 
@@ -643,11 +643,11 @@ export default function Story() {
               transition={{ delay: 0.25 }}
               className="mt-4 max-w-[400px] text-[15px] leading-relaxed text-ink/70"
             >
-              From a small setup to a trusted name in laser cutting technology, our journey is driven by
-              innovation, quality, and customer success.
+              Operating since 2004, Neelgiri Chemicals has grown into an ISO-certified supplier of 280+ raw
+              materials, driven by quality, reliability and customer success.
             </motion.p>
             <Magnetic className="mt-6">
-              <a href="#story" className="btn-outline !px-5 !py-2 !text-[13px] !font-bold !text-brand">
+              <a href="/about#story" className="btn-outline !px-5 !py-2 !text-[13px] !font-bold !text-brand">
                 Read Our Story <ArrowRight size={14} />
               </a>
             </Magnetic>
@@ -661,7 +661,7 @@ export default function Story() {
         {/* the rest, with gaps between them: left, right, left */}
         <div className="mt-12 flex flex-col gap-12 lg:mt-32 lg:gap-32">
           {rest.map((t, i) => {
-            const onLeft = i % 2 === 0; // 2018 → left, 2021 → right, 2026 → left
+            const onLeft = i % 2 === 0; // 2nd → left, 3rd → right, 4th → left
             return (
               <div
                 key={t.year}

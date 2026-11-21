@@ -2,19 +2,7 @@
 "use client"
 
 import { motion, MotionConfig } from "framer-motion"
-
-export const contact = {
-  name: "Ci Laser Cutting International",
-  shortName: "Ci Laser",
-  phone: "07949292120",
-  phoneHref: "+917949292120",
-  phoneLabel: "079 4929 2120",
-  whatsapp: "917949292120",
-  whatsappText: "Hello, I would like to know more about your laser cutting services.",
-  email: "info@cilaser.com",
-  address: "Second Floor Right Portion, B-132, Satguru Ram Singh Marg, Mayapuri Industrial Area Phase 1, Bagga, Brothers New Delhi - 110064, Delhi, India",
-  catalogueUrl: "https://www.chiragint.in",
-};
+import { company, whatsappLink } from "@/lib/company"
 
 const WhatsApp = () => (
   <svg
@@ -48,14 +36,12 @@ const linkCls =
   "group/fc relative flex items-center justify-end gap-2.5"
 
 const labelCls =
-  "pointer-events-none translate-x-3.5 whitespace-nowrap rounded-full border-2 border-solid border-ink bg-white px-4 py-2 text-[0.85rem] font-semibold opacity-0 transition-[opacity,transform] duration-[180ms] ease-out group-hover/fc:translate-x-0 group-hover/fc:opacity-100 group-focus-visible/fc:translate-x-0 group-focus-visible/fc:opacity-100 max-[720px]:hidden"
+  "pointer-events-none translate-x-3.5 whitespace-nowrap rounded-full border-2 border-solid border-brand-200 bg-white px-4 text-brand-900 py-2 text-[0.85rem] font-semibold opacity-0 transition-[opacity,transform] duration-[180ms] ease-out group-hover/fc:translate-x-0 group-hover/fc:opacity-100 group-focus-visible/fc:translate-x-0 group-focus-visible/fc:opacity-100 max-[720px]:hidden"
 
 const btnCls =
-  "relative grid h-[58px] w-[58px] place-items-center rounded-full border-2 border-solid border-ink shadow-[0_10px_22px_rgba(31,42,51,0.28)] transition-[transform,box-shadow] duration-[180ms] ease-out group-hover/fc:-translate-y-1 group-hover/fc:scale-[1.06] group-hover/fc:shadow-[0_16px_28px_rgba(31,42,51,0.34)] max-[720px]:h-[52px] max-[720px]:w-[52px]"
+  "relative grid h-[58px] w-[58px] place-items-center rounded-full border-2 border-solid border-white shadow-[0_10px_22px_rgba(31,42,51,0.28)] transition-[transform,box-shadow] duration-[180ms] ease-out group-hover/fc:-translate-y-1 group-hover/fc:scale-[1.06] group-hover/fc:shadow-[0_16px_28px_rgba(31,42,51,0.34)] max-[720px]:h-[52px] max-[720px]:w-[52px]"
 
-const wa = `https://wa.me/${contact.whatsapp}?text=${encodeURIComponent(
-  contact.whatsappText
-)}`
+const wa = whatsappLink()
 
 export default function FloatingContact() {
   return (
@@ -103,8 +89,8 @@ export default function FloatingContact() {
         >
           <a
             className={linkCls}
-            href={`tel:${contact.phoneHref}`}
-            aria-label={`Call us at ${contact.phoneLabel}`}
+            href={`tel:${company.phoneHref}`}
+            aria-label={`Call us at ${company.phone}`}
           >
             <span className={labelCls}>
               Call us

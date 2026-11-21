@@ -1,26 +1,28 @@
-import ProductCatalogue from "@/components/machines/ProductCatalogue";
-import ContactStrip from "@/components/machines/ContactStrip";
+import { Suspense } from "react";
+import ProductCatalogue from "@/components/product/ProductCatalogue";
 import PageHero from "@/components/ui/PageHero";
 import CTA from "@/components/CTA";
 
 export const metadata = {
   title: "Our Products",
   description:
-    "Explore laser cutting, engraving and marking machines built for high precision, speed and industrial performance.",
+    "Rutile titanium dioxide, thermoplastic road marking paint, glass beads, hydrocarbon resins, stearates, starch, industrial chemicals and road marking machines from Neelgiri Chemicals.",
 };
 
-export default function MachinesPage() {
+export default function ProductsPage() {
   return (
     <div className="bg-[#f8faff] text-[#101d3d]">
       <PageHero
-        eyebrow="Precision Laser Solutions"
+        eyebrow="Chemicals & Materials"
         title="Our"
         highlight="Products"
-        description="We help manufacturers, workshops and jewellers cut, engrave and mark with confidence, with the right laser machine and the support to keep it running."
-        bannerImage="/all_products_bann.png"
+        description="Titanium dioxide, road-marking materials, resins, stearates and more – ISO-certified supply for paint, plastics, adhesives, rubber and infrastructure."
+        bannerImage="/images/hero_1.png"
       />
-      <ProductCatalogue />
-       <CTA/>
+      <Suspense fallback={<div className="min-h-[50vh]" />}>
+        <ProductCatalogue />
+      </Suspense>
+      <CTA />
     </div>
   );
 }

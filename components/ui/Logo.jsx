@@ -1,3 +1,5 @@
+import Link from "next/link";
+
 export function FlaskMark({ className = "h-11 w-11" }) {
   return (
     <svg viewBox="0 0 48 48" className={className} fill="none" aria-hidden="true">
@@ -20,10 +22,19 @@ export function FlaskMark({ className = "h-11 w-11" }) {
   );
 }
 
-export default function Logo({ className = "" }) {
+/*
+  variant="dark"  → navy wordmark, for light backgrounds (navbar)
+  variant="light" → original white wordmark, for dark backgrounds (footer)
+*/
+export default function Logo({ variant = "dark", className = "h-[52px] w-auto" }) {
   return (
-    <a href="#home" className="mt-10 flex item-center justify-center" >
-     <img src="/logo.webp" alt="Neelgiri" width={200} height={120} />
-    </a>
+    <Link href="/" aria-label="Neelgiri Chemicals – home" className="inline-flex shrink-0 items-center">
+      {/* eslint-disable-next-line @next/next/no-img-element */}
+      <img
+        src={variant === "dark" ? "/logo-dark.png" : "/logo-light.png"}
+        alt="Neelgiri Chemicals"
+        className={className}
+      />
+    </Link>
   );
 }
