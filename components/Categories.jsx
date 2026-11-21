@@ -2,18 +2,23 @@
 
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
+import Link from "next/link";
 import {
   ArrowRight,
   ArrowUpRight,
   Atom,
   ChevronRight,
-  Droplets,
+  CircleDot,
+  Cog,
   FlaskConical,
+  Layers,
   Network,
+  Route,
   Sprout,
 } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import Img, { pexels } from "@/components/ui/Img";
+import Img from "@/components/ui/Img";
+import { categories, categoryCoverImages } from "@/lib/products";
 
 
 const GREEN_700 = "#a9d6f7";
@@ -21,48 +26,35 @@ const GOLD = "#d8b568";
 const WHITE = "#ffffff";
 const SERIF = '"Cormorant Garamond", "Playfair Display", Georgia, "Times New Roman", serif';
 
-const cats = [
-  {
-    id: "industrial",
-    lines: ["Industrial", "Chemicals"],
-    desc: "Core chemicals for manufacturing and heavy industry.",
-    icon: FlaskConical,
-    img: pexels(8917946, 600),
-  },
-  {
-    id: "specialty",
-    lines: ["Specialty", "Chemicals"],
-    desc: "Tailored formulations for precise, high-value uses.",
-    icon: Network,
-    img: pexels(7110136, 600),
-  },
-  {
-    id: "performance",
-    lines: ["Performance", "Chemicals"],
-    desc: "Advanced additives that boost quality and efficiency.",
-    icon: Atom,
-    img: pexels(25626509, 600),
-  },
-  {
-    id: "water",
-    lines: ["Water Treatment", "Chemicals"],
-    desc: "Clean, safe water for industry and communities.",
-    icon: Droplets,
-    img: pexels(7981132, 600),
-  },
-  {
-    id: "agro",
-    lines: ["Agro", "Chemicals"],
-    desc: "Crop-care solutions for healthier, higher yields.",
-    icon: Sprout,
-    img: pexels(1002703, 600),
-  },
-];
+const ICONS = {
+  atom: Atom,
+  road: Route,
+  circles: CircleDot,
+  network: Network,
+  layers: Layers,
+  flask: FlaskConical,
+  sprout: Sprout,
+  cog: Cog,
+};
+
+/* "Road Marking Paint" → ["Road Marking", "Paint"]; single words keep line 2 empty */
+const splitLabel = (label) => {
+  const i = label.lastIndexOf(" ");
+  return i === -1 ? [label, ""] : [label.slice(0, i), label.slice(i + 1)];
+};
+
+const cats = categories.map((c) => ({
+  id: c.id,
+  lines: splitLabel(c.label),
+  desc: c.tagline,
+  icon: ICONS[c.icon] ?? FlaskConical,
+  img: categoryCoverImages(c.id),
+}));
 
 const H = 430; // stage height (px)
 
 // 4 visible cards; the big featured (active) card sits on the LEFT.
-// The 5th category waits off-stage (invisible) and rotates in as the slider moves.
+// Any further categories wait off-stage (invisible) and rotate in as the slider moves.
 const ACTIVE_POS = 0;
 const slots = [
   { left: 0,    w: 34,   h: 406, zi: 4, o: 1 },
@@ -92,11 +84,11 @@ function Molecule({ className = "", flip = false }) {
       <defs>
         <radialGradient id="mol" cx="35%" cy="30%" r="75%">
           <stop offset="0%" stopColor="#ffffff" stopOpacity="0.95" />
-          <stop offset="45%" stopColor="#b9d6c4" stopOpacity="0.9" />
-          <stop offset="100%" stopColor="#6fa384" stopOpacity="0.85" />
+          <stop offset="45%" stopColor="#bcdcf5" stopOpacity="0.9" />
+          <stop offset="100%" stopColor="#5aa3d9" stopOpacity="0.85" />
         </radialGradient>
       </defs>
-      <g stroke="#a9c7b4" strokeWidth="5" strokeLinecap="round" opacity="0.8">
+      <g stroke="#8fbbe0" strokeWidth="5" strokeLinecap="round" opacity="0.8">
         {nodes.slice(0, -1).map((a, i) => (
           <line key={i} x1={a[0]} y1={a[1]} x2={nodes[i + 1][0]} y2={nodes[i + 1][1]} />
         ))}
@@ -114,13 +106,13 @@ function CatCard({ c, index = 0, active = false }) {
   const num = String(index + 1).padStart(2, "0");
 
   return (
-    <a
-      href="#products"
-      aria-label={c.lines.join(" ")}
+    <Link
+      href={`/products?category=${c.id}`}
+      aria-label={c.lines.join(" ").trim()}
       className={`group relative block h-full w-full overflow-hidden rounded-[28px] transition-all duration-500 ${
         active
-          ? "shadow-[0_34px_60px_-22px_rgba(15,61,40,0.65)]"
-          : "shadow-[0_20px_40px_-22px_rgba(15,61,40,0.5)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_rgba(15,61,40,0.6)]"
+          ? "shadow-[0_34px_60px_-22px_rgba(14,58,93,0.65)]"
+          : "shadow-[0_20px_40px_-22px_rgba(14,58,93,0.5)] hover:-translate-y-1.5 hover:shadow-[0_28px_48px_-22px_rgba(14,58,93,0.6)]"
       }`}
      
     >
@@ -128,7 +120,7 @@ function CatCard({ c, index = 0, active = false }) {
       <div className="absolute inset-0 overflow-hidden">
         <Img
           src={c.img}
-          alt={c.lines.join(" ")}
+          alt={c.lines.join(" ").trim()}
           className={`h-full w-full object-cover transition duration-700 group-hover:scale-110 ${
             active ? "scale-105" : "scale-100 saturate-[0.85]"
           }`}
@@ -140,8 +132,8 @@ function CatCard({ c, index = 0, active = false }) {
         className="pointer-events-none absolute inset-0"
         style={{
           background: active
-            ? "linear-gradient(to top, rgba(10,42,26,0.92) 0%, rgba(10,42,26,0.35) 42%, rgba(10,42,26,0.05) 70%, rgba(10,42,26,0.25) 100%)"
-            : "linear-gradient(to top, rgba(10,42,26,0.78) 0%, rgba(10,42,26,0.15) 45%, rgba(10,42,26,0) 70%)",
+            ? "linear-gradient(to top, rgba(8,33,58,0.92) 0%, rgba(8,33,58,0.35) 42%, rgba(8,33,58,0.05) 70%, rgba(8,33,58,0.25) 100%)"
+            : "linear-gradient(to top, rgba(8,33,58,0.78) 0%, rgba(8,33,58,0.15) 45%, rgba(8,33,58,0) 70%)",
         }}
       />
 
@@ -172,7 +164,7 @@ function CatCard({ c, index = 0, active = false }) {
       <div
         className={`absolute inset-x-2.5 bottom-2.5 rounded-[20px] border px-3.5 backdrop-blur-xl transition-all duration-500 ${
           active
-            ? "border-white/15 bg-[#0f3d28]/80 py-4"
+            ? "border-white/15 bg-[#0e3a5d]/80 py-4"
             : "border-white/70 bg-white/92 py-3"
         }`}
         style={{ backgroundColor: active ? undefined : "rgba(255,255,255,0.93)" }}
@@ -182,8 +174,8 @@ function CatCard({ c, index = 0, active = false }) {
           <span
             className={`flex shrink-0 items-center justify-center rounded-full transition-all duration-300 ${
               active
-                ? "h-11 w-11 text-[#0f3d28]"
-                : "h-10 w-10 bg-[#e3eee6] text-[#1f5a3c] group-hover:bg-[#17533a] group-hover:text-white"
+                ? "h-11 w-11 text-[#0e3a5d]"
+                : "h-10 w-10 bg-[#e1effb] text-[#1f5a3c] group-hover:bg-[#1a68a0] group-hover:text-white"
             }`}
             style={active ? { background: GOLD } : undefined}
           >
@@ -193,12 +185,12 @@ function CatCard({ c, index = 0, active = false }) {
           {/* Title */}
           <p
             className={`min-w-0 flex-1 break-words font-semibold leading-[1.2] ${
-              active ? "text-[16.5px] text-white" : "text-[14px] text-[#0f3d28]"
+              active ? "text-[16.5px] text-white" : "text-[14px] text-[#0e3a5d]"
             }`}
           >
             {c.lines[0]}
             <br />
-            <span className={active ? "font-medium text-white/75" : "font-medium text-[#5b6660]"}>
+            <span className={active ? "font-medium text-white/75" : "font-medium text-[#52667d]"}>
               {c.lines[1]}
             </span>
           </p>
@@ -207,8 +199,8 @@ function CatCard({ c, index = 0, active = false }) {
           <span
             className={`flex h-9 w-9 shrink-0 items-center justify-center rounded-full border transition-all duration-300 group-hover:translate-x-0.5 ${
               active
-                ? "border-white/30 bg-white text-[#17533a] group-hover:bg-[#d8b568] group-hover:text-[#0f3d28]"
-                : "border-[#17533a]/15 bg-[#e3eee6] text-[#17533a] group-hover:border-[#17533a] group-hover:bg-[#17533a] group-hover:text-white"
+                ? "border-white/30 bg-white text-[#1a68a0] group-hover:bg-[#d8b568] group-hover:text-[#0e3a5d]"
+                : "border-[#1a68a0]/15 bg-[#e1effb] text-[#1a68a0] group-hover:border-[#1a68a0] group-hover:bg-[#1a68a0] group-hover:text-white"
             }`}
           >
             <ArrowRight className="h-[17px] w-[17px]" strokeWidth={1.8} />
@@ -222,7 +214,7 @@ function CatCard({ c, index = 0, active = false }) {
           </p>
         )}
       </div>
-    </a>
+    </Link>
   );
 }
 
@@ -249,22 +241,22 @@ export default function Categories() {
       {/* soft background shapes (lightened so the page reads as white) */}
       <div
         className="pointer-events-none absolute -right-40 -top-40 h-[520px] w-[520px] rounded-full opacity-50 blur-3xl"
-        style={{ background: "radial-gradient(circle, #e8f1eb 0%, rgba(232,241,235,0) 70%)" }}
+        style={{ background: "radial-gradient(circle, #e1effb 0%, rgba(225,239,251,0) 70%)" }}
       />
       <div
         className="pointer-events-none absolute -bottom-52 right-0 h-[420px] w-[620px] rounded-[50%] opacity-60 blur-2xl"
-        style={{ background: "radial-gradient(ellipse, #dfeae3 0%, rgba(223,234,227,0) 70%)" }}
+        style={{ background: "radial-gradient(ellipse, #d6eafa 0%, rgba(214,234,250,0) 70%)" }}
       />
       <div
         className="pointer-events-none absolute -left-32 bottom-0 h-[320px] w-[520px] rounded-[50%] opacity-50 blur-2xl"
-        style={{ background: "radial-gradient(ellipse, #eef5f0 0%, rgba(238,245,240,0) 70%)" }}
+        style={{ background: "radial-gradient(ellipse, #ecf5fd 0%, rgba(236,245,253,0) 70%)" }}
       />
       <Molecule className="pointer-events-none absolute -top-2 right-[-30px] hidden w-[420px] opacity-50 lg:block" flip />
       <Molecule className="pointer-events-none absolute -bottom-4 -left-16 hidden w-[300px] opacity-40 lg:block" />
 
       <div className="relative mx-auto grid max-w-[1760px] items-center gap-10 px-[5%] lg:grid-cols-[22%_1fr] lg:gap-4 lg:px-[2%]">
         <Reveal direction="left" className="lg:pl-2">
-          <span className="inline-flex items-center gap-2.5 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#0f3d28]">
+          <span className="inline-flex items-center gap-2.5 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-semibold uppercase tracking-[0.22em] text-[#0e3a5d]">
             <span className="h-2 w-2 rounded-full bg-brand-700" />
             Our Categories
           </span>
@@ -282,19 +274,19 @@ export default function Categories() {
             </span>
           </h2>
 
-          <p className="mt-4 max-w-[320px] text-[15px] leading-[1.65] text-[#5b6660]">
-            Explore our wide range of high-performance chemicals for multiple industries.
+          <p className="mt-4 max-w-[320px] text-[15px] leading-[1.65] text-[#52667d]">
+            From rutile titanium dioxide to road-marking materials – explore the full Neelgiri range across 8 product categories.
           </p>
 
-          <a
-            href="#products"
-            className="group mt-6 inline-flex items-center gap-3 rounded-full py-1.5 pl-6 pr-1.5 text-[14px] font-medium text-white shadow-[0_16px_30px_-12px_rgba(15,61,40,0.65)] transition hover:shadow-[0_20px_34px_-12px_rgba(15,61,40,0.75)] bg-brand-500" 
+          <Link
+            href="/products"
+            className="group mt-6 inline-flex items-center gap-3 rounded-full py-1.5 pl-6 pr-1.5 text-[14px] font-medium text-white shadow-[0_16px_30px_-12px_rgba(14,58,93,0.65)] transition hover:shadow-[0_20px_34px_-12px_rgba(14,58,93,0.75)] bg-brand-500" 
           >
             Explore All Categories
-            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0f3d28] transition group-hover:translate-x-0.5">
+            <span className="flex h-9 w-9 items-center justify-center rounded-full bg-white text-[#0e3a5d] transition group-hover:translate-x-0.5">
               <ArrowRight className="h-[18px] w-[18px]" strokeWidth={1.8} />
             </span>
-          </a>
+          </Link>
         </Reveal>
 
         {/* ---------------- slider ---------------- */}
@@ -308,7 +300,7 @@ export default function Categories() {
               >
                 {cats.map((c, i) => {
                   const pos = (i - active + ACTIVE_POS + n) % n;
-                  const s = slots[pos];
+                  const s = slots[Math.min(pos, slots.length - 1)];
                   const isActive = pos === ACTIVE_POS;
                   return (
                     <motion.div
@@ -345,7 +337,7 @@ export default function Categories() {
               <button
                 aria-label="Next category"
                 onClick={() => go(1)}
-                className="absolute right-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#17533a]/15 bg-white text-[#0f3d28] shadow-[0_12px_28px_-10px_rgba(15,61,40,0.4)] transition hover:scale-105 hover:bg-[#17533a] hover:text-white"
+                className="absolute right-0 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-[#1a68a0]/15 bg-white text-[#0e3a5d] shadow-[0_12px_28px_-10px_rgba(14,58,93,0.4)] transition hover:scale-105 hover:bg-[#1a68a0] hover:text-white"
               >
                 <ChevronRight className="h-5 w-5" strokeWidth={2} />
               </button>
@@ -355,10 +347,10 @@ export default function Categories() {
                 {cats.map((c, i) => (
                   <button
                     key={c.id}
-                    aria-label={`Show ${c.lines.join(" ")}`}
+                    aria-label={`Show ${c.lines.join(" ").trim()}`}
                     onClick={() => setActive(i)}
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      i === active ? "w-9 bg-[#0f3d28]" : "w-7 bg-[#d5e3da] hover:bg-[#a9c7b4]"
+                      i === active ? "w-9 bg-[#0e3a5d]" : "w-7 bg-[#cfe3f5] hover:bg-[#8fbbe0]"
                     }`}
                   />
                 ))}

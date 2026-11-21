@@ -15,41 +15,44 @@ import {
 } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import Molecule from "@/components/ui/Molecule";
+import Link from "next/link";
+import { yearsInBusiness, industries } from "@/lib/company";
+import { productCount, categories } from "@/lib/products";
 
 const features = [
   {
     icon: ShieldCheck,
-    title: "Premium Quality Products",
-    description: "Consistent quality, assured performance.",
+    title: "ISO-Certified Quality",
+    description: "Consistent quality and assured performance.",
+  },
+  {
+    icon: FlaskConical,
+    title: "Wide Product Range",
+    description: "280+ raw materials from one trusted supplier.",
   },
   {
     icon: Lightbulb,
-    title: "Innovation-Led Solutions",
-    description: "Advanced solutions for modern industries.",
-  },
-  {
-    icon: Leaf,
-    title: "Sustainable Approach",
-    description: "Eco-friendly processes for a greener tomorrow.",
+    title: "Custom Solutions",
+    description: "Grades and packaging matched to your application.",
   },
   {
     icon: Handshake,
     title: "Reliable Partnership",
-    description: "Your long-term growth is our priority.",
+    description: "Long-term supply relationships, not one-off orders.",
   },
   {
     icon: Globe,
-    title: "Global Reach",
-    description: "Serving industries worldwide.",
+    title: "Industry-Wide Reach",
+    description: `Serving ${industries.length} industries, from paints to road construction.`,
   },
 ];
 
 const stats = [
-  { icon: Award, value: "30+", label: "Years of Experience" },
-  { icon: Users, value: "500+", label: "Happy Clients" },
-  { icon: FlaskConical, value: "100+", label: "Products Range" },
-  { icon: Globe, value: "25+", label: "Countries Served" },
-  { icon: ShieldCheck, value: "100%", label: "Quality Assurance" },
+  { icon: Award, value: `${yearsInBusiness()}+`, label: "Years of Experience" },
+  { icon: FlaskConical, value: "280+", label: "Raw Materials" },
+  { icon: Users, value: `${industries.length}`, label: "Industries Served" },
+  { icon: Globe, value: `${categories.length}`, label: "Core Product Categories" },
+  { icon: ShieldCheck, value: "ISO", label: "Certified" },
 ];
 
 const containerVariants = {
@@ -140,23 +143,23 @@ export default function WhyChoose() {
               </h2>
 
               <p className="mt-7 max-w-[440px] text-[15px] leading-[1.8] text-[#5b6b85] sm:text-[17px]">
-                With a commitment to quality, innovation and sustainability,
-                we stand out in the chemical industry.
+                Quality-checked titanium dioxide, resins, stearates and road-marking materials,
+                backed by a team that has been supplying industry since 2004.
               </p>
 
               <div className="mt-8 flex items-center gap-5">
-                <motion.a
-                  href="#products"
-                  whileHover={{ scale: 1.04 }}
-                  whileTap={{ scale: 0.97 }}
+                <motion.div whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}>
+                <Link
+                  href="/products"
                   className="group inline-flex items-center gap-5 rounded-full border border-[#d3b76e] bg-[#0a2e6e] py-2 pl-6 pr-2 text-[14px] font-semibold text-white shadow-[0_12px_30px_rgba(30,80,180,0.28)] transition-colors hover:bg-[#123f91]"
                 >
-                  Explore Our Advantages
+                  Explore Our Products
 
                   <span className="flex h-10 w-10 items-center justify-center rounded-full bg-white text-[#0a2e6e] transition-transform group-hover:translate-x-1">
                     <ArrowRight size={19} />
                   </span>
-                </motion.a>
+                </Link>
+                </motion.div>
               </div>
 
               {/* Decorative line */}

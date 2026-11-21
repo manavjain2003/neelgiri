@@ -11,16 +11,27 @@ html {
 body {
   @apply font-sans text-brand-900 antialiased;
   background:
-    radial-gradient(1000px 420px at 85% 3%, #dcebd3 0%, transparent 70%),
-    radial-gradient(900px 520px at 0% 30%, #e8f0df 0%, transparent 70%),
-    linear-gradient(180deg, #f8f9f1 0%, #ffffff 40%, #f1f5ea 100%);
+    radial-gradient(1000px 420px at 85% 3%, #dbeefc 0%, transparent 70%),
+    radial-gradient(900px 520px at 0% 30%, #e6f2fc 0%, transparent 70%),
+    linear-gradient(180deg, #f4faff 0%, #ffffff 40%, #eef6fd 100%);
   background-attachment: fixed;
 }
 
-::-webkit-scrollbar-track { background: #f3f6ee; }
-::-webkit-scrollbar-thumb { background: #a9c9b0; border-radius: 999px; }
+::-webkit-scrollbar {
+  width: 10px;
+}
+::-webkit-scrollbar-track {
+  background: #f4faff;
+}
+::-webkit-scrollbar-thumb {
+  background: #a9d6f7;
+  border-radius: 999px;
+}
 
 @layer components {
+  .container-x {
+    @apply mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-10;
+  }
   .glass {
     @apply border border-white/90 bg-white/55 shadow-glass backdrop-blur-xl;
   }
@@ -38,18 +49,6 @@ body {
   }
 }
 
-::-webkit-scrollbar {
-  width: 10px;
-}
-::-webkit-scrollbar-track {
-  background: #f4faff;
-}
-::-webkit-scrollbar-thumb {
-  background: #a9d6f7;
-  border-radius: 999px;
-}
-
-
 @keyframes mirrorSweep {
   0%   { transform: translateX(-120%) skewX(-20deg); opacity: 0; }
   10%  { opacity: 1; }
@@ -63,7 +62,7 @@ body {
 
 /* faster sweep when hovering the card */
 .mirror-card:hover .mirror-sweep {
-  animation-duration: 1.6sl;
+  animation-duration: 1.6s;
 }
 
 @media (prefers-reduced-motion: reduce) {
