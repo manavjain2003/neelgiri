@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
+import QuoteModal from "@/components/ui/QuoteModal"; // adjust path if needed
 
 const links = [
   { label: "Home", id: "home", link: "/" },
@@ -14,6 +15,7 @@ const links = [
 
 export default function Navbar() {
   const [open, setOpen] = useState(false);
+  const [quoteOpen, setQuoteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
   const [active, setActive] = useState("home");
 
@@ -80,15 +82,16 @@ export default function Navbar() {
 
         {/* CTA & Mobile Toggle */}
         <div className="flex items-center gap-3">
-          <motion.a
-            href="#contact"
+          <motion.button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
             whileHover={{ scale: 1.06 }}
             whileTap={{ scale: 0.96 }}
-            className="hidden items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[14px] font-semibold text-white shadow-lg backdrop-blur-sm hover:bg-white/25 sm:inline-flex bg-brand-500" 
+            className="hidden items-center gap-2 rounded-full border border-white/20 px-6 py-3 text-[14px] font-semibold text-white shadow-lg backdrop-blur-sm hover:bg-white/25 sm:inline-flex bg-brand-500"
           >
             Get a Quote
             <ArrowRight className="h-4 w-4" />
-          </motion.a>
+          </motion.button>
 
           <button
             aria-label="Toggle menu"
@@ -124,18 +127,24 @@ export default function Navbar() {
                 </motion.a>
               ))}
 
-              <a
-                href="#contact"
-                onClick={() => setOpen(false)}
+              <button
+                type="button"
+                onClick={() => {
+                  setOpen(false);
+                  setQuoteOpen(true);
+                }}
                 className="mt-2 flex items-center justify-center gap-2 rounded-full border border-white/20 px-6 py-3 text-base font-semibold text-white backdrop-blur-sm bg-brand-500"
               >
                 Get a Quote
                 <ArrowRight className="h-5 w-5" />
-              </a>
+              </button>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
+
+      {/* Quote Modal (portaled to document.body, so header blur/sticky won't clip it) */}
+      <QuoteModal open={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </motion.header>
   );
 }

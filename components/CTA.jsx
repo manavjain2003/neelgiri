@@ -1,11 +1,13 @@
 "use client";
 
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
 import Img, { pexels } from "@/components/ui/Img";
 import Flask from "@/components/ui/Flask";
 import Molecule from "./ui/Molecule";
+import QuoteModal from "@/components/ui/QuoteModal"; // adjust path if needed
 
 const gridPattern = {
   backgroundImage:
@@ -14,6 +16,8 @@ const gridPattern = {
 };
 
 export default function CTA() {
+  const [quoteOpen, setQuoteOpen] = useState(false);
+
   return (
     <section id="contact">
       <Reveal direction="scale" duration={0.9}>
@@ -69,7 +73,7 @@ export default function CTA() {
                 transition={{ duration: 14, repeat: Infinity, ease: "linear" }}
                 className="absolute -inset-2"
               />
-              <Molecule/>
+              <Molecule />
             </motion.div>
             <div className="text-white">
               <p className="mb-1.5 flex items-center gap-2 text-[11px] font-semibold uppercase tracking-[0.22em] text-[#e6c778]">
@@ -86,22 +90,17 @@ export default function CTA() {
           </div>
 
           {/* button */}
-          <motion.a
-            href="/contact"
-            whileHover={{ scale: 1.07 }}
-            whileTap={{ scale: 0.96 }}
-            className="relative inline-flex shrink-0 items-center gap-2 whitespace-nowrap rounded-full bg-gradient-to-b from-[#e6c778] to-[#c9972f] px-8 py-3.5 text-[14px] font-semibold text-[#0a2e6e] shadow-[0_10px_24px_rgba(212,165,55,0.35)]"
+          <button
+            type="button"
+            onClick={() => setQuoteOpen(true)}
+            className="btn-primary relative z-10 cursor-pointer bg-brand-500 !rounded-full !px-8 !py-4 !text-[17px]"
           >
-            <motion.span
-              aria-hidden="true"
-              animate={{ scale: [1, 1.35], opacity: [0.5, 0] }}
-              transition={{ duration: 1.8, repeat: Infinity, ease: "easeOut" }}
-              className="absolute inset-0 rounded-full border-2 border-[#e6c778]"
-            />
-            Contact Us <ArrowRight className="h-4 w-4" />
-          </motion.a>
+            Get a Quote <ArrowRight className="h-4 w-4" />
+          </button>
         </div>
       </Reveal>
+
+      <QuoteModal open={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </section>
   );
 }

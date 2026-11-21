@@ -1,11 +1,15 @@
 "use client";
 
+import { useState } from "react";
 import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Img from "@/components/ui/Img";
+import QuoteModal from "@/components/ui/QuoteModal"; // adjust path if needed
 
 export default function Hero() {
+  const [quoteOpen, setQuoteOpen] = useState(false);
+
   return (
     <section
       id="home"
@@ -51,15 +55,18 @@ export default function Hero() {
             <Link href="/products" className="btn-primary !rounded-full !px-8 !py-4 !text-[17px]">
               Explore Our Products <ArrowRight className="h-4 w-4" />
             </Link>
-            <Link
-              href="/contact"
+            <button
+              type="button"
+              onClick={() => setQuoteOpen(true)}
               className="btn-primary bg-brand-500 !rounded-full !px-8 !py-4 !text-[17px]"
             >
               Get a Quote <ArrowRight className="h-4 w-4" />
-            </Link>
+            </button>
           </div>
         </motion.div>
       </div>
+
+      <QuoteModal open={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </section>
   );
 }
