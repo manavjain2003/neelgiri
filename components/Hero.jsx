@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
 import Img from "@/components/ui/Img";
@@ -13,7 +14,7 @@ export default function Hero() {
       {/* Background image */}
       <Img
         src="/images/hero_1.png"
-        alt="Chemical plant at sunrise"
+        alt="Chemical plant with titanium dioxide and pigment powders"
         className="pointer-events-none absolute inset-0 z-0 h-full w-full object-cover"
       />
 
@@ -42,19 +43,20 @@ export default function Hero() {
           </h1>
 
           <p className="mt-6 max-w-[470px] text-[18px] leading-[1.6] text-brand-900/90">
-            Premium quality chemicals, crafted for a sustainable and innovative future.
+            Rutile titanium dioxide, resins, stearates, glass beads and road-marking materials –
+            ISO-certified supply to industry since 2004.
           </p>
 
           <div className="mt-7 flex flex-wrap items-center gap-4">
-            <a href="#products" className="btn-primary !rounded-full !px-8 !py-4 !text-[17px]">
+            <Link href="/products" className="btn-primary !rounded-full !px-8 !py-4 !text-[17px]">
               Explore Our Products <ArrowRight className="h-4 w-4" />
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              href="/contact"
               className="btn-primary bg-brand-500 !rounded-full !px-8 !py-4 !text-[17px]"
             >
               Get a Quote <ArrowRight className="h-4 w-4" />
-            </a>
+            </Link>
           </div>
         </motion.div>
       </div>

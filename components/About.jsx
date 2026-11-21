@@ -1,19 +1,21 @@
 "use client";
 
+import Link from "next/link";
 import { motion } from "framer-motion";
 import { ArrowRight, Award, Leaf, ShieldCheck, UserCheck } from "lucide-react";
 import Reveal from "@/components/ui/Reveal";
-import Img, { pexels } from "@/components/ui/Img";
+import Img from "@/components/ui/Img";
+import { company, yearsInBusiness } from "@/lib/company";
 
 const features = [
-  { icon: ShieldCheck, title: "Trusted Quality", text: "Every batch tested to strict industry standards." },
-  { icon: Leaf, title: "Sustainable Practices", text: "Eco-conscious processes that protect our future." },
-  { icon: UserCheck, title: "Customer-Centric Approach", text: "Solutions built around your specific needs." },
+  { icon: ShieldCheck, title: "ISO-Certified", text: "Consistent quality and dependable supply, batch after batch." },
+  { icon: Leaf, title: "280+ Raw Materials", text: "One partner for pigments, resins, stearates, beads and more." },
+  { icon: UserCheck, title: "Customer-Centric", text: "Grades, packaging and quotes built around your requirement." },
 ];
 
-const IMG_MAIN = "https://media.istockphoto.com/id/1187820892/photo/i-hope-nothing-goes-wrong.jpg?s=612x612&w=0&k=20&c=wL7GM3c4PfN44vqtGWldrgB5lENgVdMCWPJY0Wahz_8=";
-const IMG_LEFT = "about_illustration_1.png";
-const IMG_RIGHT = "about_illustration_1.png";
+const IMG_MAIN = "/images/hero.png";
+const IMG_LEFT = "/about_illustration_1.png";
+const IMG_RIGHT = "/images/why.png";
 
 function MirrorShine({ delay = 0 }) {
   return (
@@ -64,7 +66,7 @@ export default function About() {
               className="mirror-card absolute left-[4%] top-[22%] z-0 h-[58%] w-[24%] drop-shadow-[0_14px_24px_rgba(10,40,80,0.16)]"
             >
               <div className="relative h-full w-full overflow-hidden" style={{ clipPath: "url(#shapeLeft)" }}>
-                <Img src={IMG_LEFT} alt="Chemical plant" className="h-full w-full object-cover" />
+                <Img src={IMG_LEFT} alt="Neelgiri Chemicals plant" className="h-full w-full object-cover" />
                 <MirrorShine delay={1.5} />
               </div>
             </motion.div>
@@ -102,7 +104,7 @@ export default function About() {
               className="mirror-card absolute right-[7%] top-[20%] z-[5] h-[64%] w-[22%] drop-shadow-[0_14px_24px_rgba(10,40,80,0.16)]"
             >
               <div className="relative h-full w-full overflow-hidden" style={{ clipPath: "url(#shapeRight)" }}>
-                <Img src={IMG_RIGHT} alt="Industrial towers" className="h-full w-full object-cover" />
+                <Img src={IMG_RIGHT} alt="Chemical powders and laboratory glassware" className="h-full w-full object-cover" />
                 <MirrorShine delay={3} />
               </div>
             </motion.div>
@@ -124,7 +126,7 @@ export default function About() {
                   <Award className="h-6 w-6" />
                 </span>
                 <div>
-                  <p className="font-serif text-[34px] font-semibold leading-none text-brand-900">25+</p>
+                  <p className="font-serif text-[34px] font-semibold leading-none text-brand-900">{yearsInBusiness()}+</p>
                   <p className="mt-1 text-[12px] leading-tight text-brand-900/80">
                     Years of
                     <br />
@@ -142,9 +144,9 @@ export default function About() {
             About Neelgiri Chemicals
           </h2>
           <p className="mt-5 max-w-[460px] text-[14px] font-medium leading-[1.7] text-brand-900/85">
-            At <strong className="font-bold">Neelgiri Chemicals</strong>, we are committed to innovation, quality and
-            sustainability. With over 25 years of expertise, we manufacture and supply premium-grade chemicals that
-            power industries and support a better future.
+            <strong className="font-bold">{company.name}</strong> is a chemical solutions supplier of specialty
+            chemicals, industrial minerals, performance additives and customised raw materials. Operating since{" "}
+            {company.founded}, we serve paint, plastics, adhesives, rubber and road-construction customers from New Delhi.
           </p>
 
           <div className="mt-7 grid gap-3 sm:grid-cols-3">
@@ -169,9 +171,9 @@ export default function About() {
             })}
           </div>
 
-          <a href="#about" className="btn-primary mt-8 !rounded-full !bg-brand-900 !px-6 !py-3 !text-[12px]">
+          <Link href="/about" className="btn-primary mt-8 !rounded-full !bg-brand-900 !px-6 !py-3 !text-[12px]">
             Know More About Us <ArrowRight className="h-3.5 w-3.5" />
-          </a>
+          </Link>
         </Reveal>
       </div>
     </section>

@@ -19,7 +19,7 @@ export function generateMetadata({ params }) {
     openGraph: {
       title: product.name,
       description: product.summary,
-      images: [product.image],
+      ...(product.ogImage ? { images: [product.ogImage] } : {}),
     },
   };
 }

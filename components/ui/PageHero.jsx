@@ -42,8 +42,8 @@ export default function PageHero({
       <div
         className={`mx-auto w-full max-w-[1440px] px-5 sm:px-8 lg:px-10 ${
           compact
-            ? "pb-24 pt-10 sm:pb-28 lg:pb-32 lg:pt-12"
-            : "py-16 sm:py-20 lg:py-24"
+            ? "pb-24 pt-[calc(2.5rem+82px)] sm:pb-28 lg:pb-32 lg:pt-[calc(3rem+82px)]"
+            : "pb-16 pt-[calc(4rem+82px)] sm:pb-20 sm:pt-[calc(5rem+82px)] lg:pb-24 lg:pt-[calc(6rem+82px)]"
         }`}
       >
         <nav

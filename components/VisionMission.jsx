@@ -11,9 +11,9 @@ const items = [
     label: "Our Vision",
     watermark: "VISION",
     icon: Eye,
-    title: "Precision laser technology, within every industry's reach",
-    text: "To be the most trusted partner in laser cutting, engraving and marking, helping manufacturers, workshops and jewellers work with greater precision, speed and confidence.",
-    points: ["Precision in every cut", "Advanced technology made accessible", "Long-term growth for our customers"],
+    title: "A trusted partner for every industry's raw materials",
+    text: "To be the most dependable supplier of quality chemicals and raw materials, helping paint, plastics, adhesive, rubber and road-construction customers produce with confidence.",
+    points: ["Consistent quality, batch after batch", "A wide range from a single supplier", "Long-term growth for our customers"],
     from: -90,
   },
   {
@@ -21,9 +21,9 @@ const items = [
     label: "Our Mission",
     watermark: "MISSION",
     icon: Rocket,
-    title: "The right machine, backed by people who care",
-    text: "To supply high-performance laser machines matched to each customer's material, output and budget, and to stand behind every one with installation, training and responsive after-sales support.",
-    points: ["The right machine for every job", "Installation and training included", "Support that stays after delivery"],
+    title: "Quality materials, delivered with care",
+    text: "To supply quality-assured pigments, resins, stearates and road-marking materials matched to each customer's grade, volume and budget, backed by responsive support from enquiry to delivery.",
+    points: ["The right grade for every application", "Clear quotes and responsive support", "Reliable supply you can plan around"],
     from: 90,
     dark: true,
   },
@@ -61,7 +61,7 @@ function Card({ item }) {
         }`}
       />
 
-      {/* light sweep, like a laser pass */}
+      {/* light sweep */}
       <motion.span
         aria-hidden
         initial={{ x: "-160%" }}

@@ -1,54 +1,52 @@
 "use client";
 
-import {
-  Instagram,
-  Linkedin,
-  Mail,
-  MapPin,
-  Phone,
-  Twitter,
-  Youtube,
-} from "lucide-react";
+import Link from "next/link";
+import { Facebook, Instagram, Linkedin, Mail, MapPin, Phone, Youtube } from "lucide-react";
 import Logo from "@/components/ui/Logo";
+import { company, yearsInBusiness } from "@/lib/company";
+import { categories } from "@/lib/products";
 
 const quick = [
-  { label: "Home", href: "#home" },
-  { label: "About Us", href: "#about" },
-  { label: "Products", href: "#products" },
-  { label: "Solutions", href: "#solutions" },
-  { label: "Why Us", href: "#why-us" },
+  { label: "Home", href: "/" },
+  { label: "About Us", href: "/about" },
+  { label: "Products", href: "/products" },
+  { label: "Contact", href: "/contact" },
 ];
 
-const resources = [
-  { label: "FAQs", href: "#faq" },
-  { label: "Testimonials", href: "#testimonials" },
-  { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
-];
+const productLinks = categories.map((c) => ({
+  label: c.label,
+  href: `/products?category=${c.id}`,
+}));
 
 const socials = [
-  { icon: Linkedin, label: "LinkedIn", href: "https://linkedin.com/company/neelgirichemicals" },
-  { icon: Twitter, label: "Twitter", href: "https://twitter.com/neelgirichemicals" },
-  { icon: Youtube, label: "YouTube", href: "https://youtube.com/@neelgirichemicals" },
-  { icon: Instagram, label: "Instagram", href: "https://instagram.com/neelgirichemicals" },
+  { icon: Facebook, label: "Facebook", href: company.socials.facebook },
+  { icon: Instagram, label: "Instagram", href: company.socials.instagram },
+  { icon: Youtube, label: "YouTube", href: company.socials.youtube },
+  { icon: Linkedin, label: "LinkedIn", href: company.socials.linkedin },
 ];
 
 const contacts = [
-  { icon: Phone, text: "+91 98765 43210", href: "tel:+919876543210" },
-  { icon: Mail, text: "info@neelgirichemicals.com", href: "mailto:info@neelgirichemicals.com" },
-  { icon: MapPin, text: "New Delhi, Delhi", href: "#" },
+  { icon: Phone, text: company.phone, href: `tel:${company.phoneHref}` },
+  { icon: Phone, text: company.phoneAlt, href: `tel:${company.phoneAltHref}` },
+  { icon: Mail, text: company.email, href: `mailto:${company.email}` },
+  {
+    icon: MapPin,
+    text: company.address,
+    href: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(company.mapQuery)}`,
+    external: true,
+  },
 ];
 
 /* link with a gold dash that grows in on hover */
 function FooterLink({ href, children }) {
   return (
-    <a
+    <Link
       href={href}
       className="group inline-flex items-center text-[14px] text-white/70 transition-colors duration-300 hover:text-[#e6c778]"
     >
       <span className="h-px w-0 shrink-0 bg-[#e6c778] transition-all duration-300 group-hover:mr-2 group-hover:w-4" />
       {children}
-    </a>
+    </Link>
   );
 }
 
@@ -73,9 +71,8 @@ export default function Footer() {
       <div className="pointer-events-none absolute -bottom-52 -right-32 -z-10 h-[480px] w-[480px] rounded-full border-[64px] border-white/[0.04]" />
 
       <div className="mx-auto max-w-[1440px] px-[6%] pt-12">
-        {/* Columns */}
         <nav aria-label="Footer">
-          <div className="grid gap-8 pb-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.8fr_0.8fr_1.3fr]">
+          <div className="grid gap-8 pb-12 sm:grid-cols-2 lg:grid-cols-[1.4fr_0.7fr_1fr_1.4fr]">
             {/* Brand */}
             <div>
               <div className="inline-block h-40 -m-6">
@@ -111,9 +108,9 @@ export default function Footer() {
               </ul>
             </Col>
 
-            <Col title="Resources">
+            <Col title="Our Products">
               <ul className="space-y-2.5">
-                {resources.map(({ label, href }) => (
+                {productLinks.map(({ label, href }) => (
                   <li key={label}>
                     <FooterLink href={href}>{label}</FooterLink>
                   </li>
@@ -123,16 +120,17 @@ export default function Footer() {
 
             <Col title="Contact Us">
               <ul className="space-y-3">
-                {contacts.map(({ icon: Icon, text, href }) => (
+                {contacts.map(({ icon: Icon, text, href, external }) => (
                   <li key={text}>
                     <a
                       href={href}
-                      className="group flex items-center gap-3 text-[14px] text-white/70 transition-colors duration-300 hover:text-white"
+                      {...(external ? { target: "_blank", rel: "noopener noreferrer" } : {})}
+                      className="group flex items-start gap-3 text-[14px] text-white/70 transition-colors duration-300 hover:text-white"
                     >
                       <span className="flex h-8 w-8 shrink-0 items-center justify-center rounded-full border border-white/15 bg-white/5 text-[#e6c778] transition-all duration-300 group-hover:border-[#d4a537] group-hover:bg-[#d4a537] group-hover:text-[#0a2e6e]">
                         <Icon className="h-4 w-4" />
                       </span>
-                      <span className="break-all">{text}</span>
+                      <span className="break-words pt-1 leading-snug">{text}</span>
                     </a>
                   </li>
                 ))}
@@ -144,15 +142,16 @@ export default function Footer() {
 
       {/* Bottom bar */}
       <div className="border-t border-white/10">
-        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-1 px-[6%] py-4 text-[13px] text-white/60 md:flex-row">
-          <p>© {new Date().getFullYear()} Neelgiri Chemicals. All Rights Reserved.</p>
+        <div className="mx-auto flex max-w-[1440px] flex-col items-center justify-between gap-1 px-[6%] py-4 text-center text-[13px] text-white/60 md:flex-row md:text-left">
+          <p>
+            © {new Date().getFullYear()} {company.name} All Rights Reserved. · GST: {company.gst}
+          </p>
           <div className="flex items-center gap-2">
-           Website Designed By Inquiry Bazaar Pvt. Ltd.
-            <a href="https://inquirybazaar.com/" className="transition-colors text-white hover:text-brand">
+            Website Designed By Inquiry Bazaar Pvt. Ltd.
+            <a href="https://inquirybazaar.com/" className="text-white transition-colors hover:text-brand-300">
               B2B Marketplace
             </a>
           </div>
-
         </div>
       </div>
     </footer>

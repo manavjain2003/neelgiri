@@ -8,6 +8,7 @@ module.exports = {
     extend: {
       colors: {
         brand: {
+          DEFAULT: "#2183c7",
           50: "#f5faff",
           100: "#e8f4fe",
           200: "#cfe8fb",
@@ -20,6 +21,7 @@ module.exports = {
           900: "#0e3a5d",
         },
         ice: "#f4faff",
+        ink: "#10243b",
       },
       fontFamily: {
         serif: ['"Playfair Display"', "Georgia", "serif"],
