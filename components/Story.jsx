@@ -97,30 +97,22 @@ function TimelineCard({ t, from }) {
   );
 }
 
-/* ───────────────────── path / spark helpers ───────────────────── */
+/* ───────────────────── path / powder helpers ───────────────────── */
 
 const TAU = Math.PI * 2;
 
-/* metal cooling ramp: white-hot → yellow → orange → deep red */
-const HEAT_STOPS = [
-  [0, [110, 30, 30]],
-  [0.15, [200, 50, 20]],
-  [0.4, [255, 130, 40]],
-  [0.7, [255, 210, 120]],
-  [1, [255, 250, 235]],
+/* powder palette: yellow, green, blue and white (white grains get a faint outline so they show on light bg) */
+const POWDER = [
+  { rgb: "255,196,0", ring: false },   // yellow
+  { rgb: "255,224,71", ring: false },  // light yellow
+  { rgb: "34,197,94", ring: false },   // green
+  { rgb: "132,214,92", ring: false },  // lime green
+  { rgb: "26,102,255", ring: false },  // blue
+  { rgb: "91,155,255", ring: false },  // light blue
+  { rgb: "255,255,255", ring: true },  // white
+  { rgb: "255,255,255", ring: true },  // white
 ];
-function heatRGB(h) {
-  const x = Math.min(1, Math.max(0, h));
-  for (let i = 1; i < HEAT_STOPS.length; i++) {
-    if (x <= HEAT_STOPS[i][0]) {
-      const [h0, c0] = HEAT_STOPS[i - 1];
-      const [h1, c1] = HEAT_STOPS[i];
-      const f = (x - h0) / (h1 - h0);
-      return c0.map((v, k) => Math.round(v + (c1[k] - v) * f)).join(",");
-    }
-  }
-  return "255,250,235";
-}
+const MAX_GRAINS = 420;
 
 /* S-curve through the nodes. Cards 1 & 3 (right side) get a node on their left,
    cards 2 & 4 (left side) a node on their right; the line ends at the bottom of the section. */
@@ -201,69 +193,90 @@ function distForY(T, y) {
   return Math.min(T.L, (lo + f) * T.step);
 }
 
-/* molten sparks: a tight cone opposite to travel, low count, short life, no wild pops */
-function cutSparks(T, parts, d, dir, n) {
-  if (parts.length > 260) return;
-  const [x, y] = pointAt(T, d);
-  const [x1, y1] = pointAt(T, Math.max(0, d - 4));
-  const [x2, y2] = pointAt(T, Math.min(T.L, d + 4));
-  const travel = Math.atan2(y2 - y1, x2 - x1) + (dir < 0 ? Math.PI : 0);
-  for (let k = 0; k < n; k++) {
-    const ang = travel + Math.PI + (Math.random() - 0.5) * 0.55; // narrow fan behind the cut
-    const sp = 1 + Math.pow(Math.random(), 2.2) * 4.5;           // mostly slow, few fast
-    const life = 14 + Math.random() * 26;
-    parts.push({
-      x,
-      y,
-      vx: Math.cos(ang) * sp,
-      vy: Math.sin(ang) * sp - Math.random() * 0.6,
-      life,
-      max: life,
-      w: 0.7 + Math.random() * 0.9,
-      h0: 1,
-      split: false,
-      ember: false,
-    });
-  }
-}
-
-/* faint embers left on the cut line, cooling quickly */
-function embers(T, parts, d) {
-  if (parts.length > 260) return;
-  const [x, y] = pointAt(T, d);
-  const life = 34 + Math.random() * 40;
-  parts.push({
-    x: x + (Math.random() - 0.5) * 2.5,
-    y: y + (Math.random() - 0.5) * 2.5,
-    vx: (Math.random() - 0.5) * 0.25,
-    vy: -Math.random() * 0.15,
+function grain(x, y, vx, vy, life, r, extra = {}) {
+  const c = POWDER[(Math.random() * POWDER.length) | 0];
+  return {
+    x,
+    y,
+    vx,
+    vy,
     life,
     max: life,
-    w: 0.8 + Math.random() * 0.8,
-    h0: 0.55,
-    split: true,
-    ember: true,
-  });
+    r,
+    rgb: c.rgb,
+    ring: c.ring,
+    g: 0.05, // gravity
+    drag: 0.965,
+    sway: 0.15 + Math.random() * 0.35, // sideways drift
+    wob: Math.random() * TAU,
+    wobSpeed: 0.08 + Math.random() * 0.12,
+    ...extra,
+  };
 }
 
-function burst(parts, x, y) {
-  for (let k = 0; k < 12; k++) {
-    const ang = Math.random() * TAU;
-    const sp = 0.8 + Math.pow(Math.random(), 2) * 3.5;
-    const life = 14 + Math.random() * 22;
-    parts.push({
-      x,
-      y,
-      vx: Math.cos(ang) * sp,
-      vy: Math.sin(ang) * sp - 0.4,
-      life,
-      max: life,
-      w: 0.7 + Math.random() * 0.9,
-      h0: 0.9,
-      split: false,
-      ember: false,
-    });
+/* powder sprinkled from the dot: falls down and drifts, a little pushed back against travel */
+function sprinkle(T, parts, d, dir, n) {
+  if (parts.length > MAX_GRAINS) return;
+  const [x, y] = pointAt(T, d);
+  for (let k = 0; k < n; k++) {
+    parts.push(
+      grain(
+        x + (Math.random() - 0.5) * 8,
+        y + (Math.random() - 0.5) * 4,
+        (Math.random() - 0.5) * 1.6,
+        -0.4 + Math.random() * 1.1 - dir * 0.15,
+        40 + Math.random() * 50,
+        0.7 + Math.pow(Math.random(), 2) * 1.8
+      )
+    );
   }
+}
+
+/* dust that lingers on the line behind the dot and slowly fades */
+function dust(T, parts, d) {
+  if (parts.length > MAX_GRAINS) return;
+  const [x, y] = pointAt(T, d);
+  parts.push(
+    grain(
+      x + (Math.random() - 0.5) * 10,
+      y + (Math.random() - 0.5) * 10,
+      (Math.random() - 0.5) * 0.15,
+      Math.random() * 0.12,
+      70 + Math.random() * 70,
+      0.6 + Math.random() * 1.1,
+      { g: 0.004, drag: 0.92, sway: 0.05 }
+    )
+  );
+}
+
+/* soft powder puff when the dot reaches a node */
+function puff(parts, x, y) {
+  for (let k = 0; k < 28; k++) {
+    const ang = Math.random() * TAU;
+    const sp = 0.3 + Math.pow(Math.random(), 1.6) * 2.4;
+    parts.push(
+      grain(x, y, Math.cos(ang) * sp, Math.sin(ang) * sp - 0.5, 36 + Math.random() * 40, 0.7 + Math.random() * 1.6, {
+        g: 0.035,
+      })
+    );
+  }
+}
+
+/* one heading line that slides up from behind a mask */
+function HeadLine({ children, delay = 0 }) {
+  return (
+    <span className="block overflow-hidden pb-[0.1em]">
+      <motion.span
+        className="block"
+        initial={{ y: "110%", rotate: 3 }}
+        whileInView={{ y: "0%", rotate: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay, ease: EASE }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
 }
 
 /* ───────────────────────── section ───────────────────────── */
@@ -277,7 +290,7 @@ export default function Story() {
   const canvasRef = useRef(null);
   const geomRef = useRef(null);
   const tblRef = useRef(null);
-  const st = useRef({ dist: 0, lastMask: -1, parts: [], dirty: true, flare: 0 });
+  const st = useRef({ dist: 0, lastMask: -1, parts: [], dirty: true });
   const [geom, setGeom] = useState(null);
 
   const setCardRef = (i) => (el) => {
@@ -332,7 +345,7 @@ export default function Story() {
     st.current.dirty = true;
   }, [geom]);
 
-  /* 3. animation loop: dot follows scroll, sparks fly off the line it has passed */
+  /* 3. animation loop: dot follows scroll, powder sprinkles off the line it has passed */
   useEffect(() => {
     const sec = secRef.current;
     const canvas = canvasRef.current;
@@ -358,7 +371,7 @@ export default function Story() {
       if (Math.abs(target - S.dist) < 0.2) S.dist = target;
       const moved = Math.abs(S.dist - prev);
 
-      /* bright "cut" line is revealed up to the dot */
+      /* bright line is revealed up to the dot */
       if (Math.abs(S.dist - S.lastMask) > 0.4) {
         S.lastMask = S.dist;
         maskRef.current?.setAttribute("stroke-dasharray", `${S.dist} ${T.L + 50}`);
@@ -366,48 +379,40 @@ export default function Story() {
 
       if (!reduce) {
         if (moved > 0.05) {
-          const n = Math.min(10, 1 + moved * 0.9);
+          const n = Math.min(6, 1 + moved * 0.6);
           const c = Math.floor(n) + (Math.random() < n % 1 ? 1 : 0);
-          cutSparks(T, S.parts, S.dist, S.dist >= prev ? 1 : -1, c);
-          if (Math.random() < 0.25) {
-            embers(T, S.parts, Math.max(0, S.dist - 8 - Math.random() * Math.min(140, S.dist)));
+          sprinkle(T, S.parts, S.dist, S.dist >= prev ? 1 : -1, c);
+          if (Math.random() < 0.5) {
+            dust(T, S.parts, Math.max(0, S.dist - 6 - Math.random() * Math.min(160, S.dist)));
           }
-          S.flare = 0.35;
-        } else {
-          S.flare *= 0.8;
         }
-        /* small puff when the dot passes a node */
+        /* puff when the dot passes a node */
         T.nodeD.forEach((nd, i) => {
           if ((prev < nd && S.dist >= nd) || (prev > nd && S.dist <= nd)) {
-            burst(S.parts, g.nodes[i].x, g.nodes[i].y);
+            puff(S.parts, g.nodes[i].x, g.nodes[i].y);
           }
         });
       }
 
       for (let i = S.parts.length - 1; i >= 0; i--) {
         const p = S.parts[i];
-        p.x += p.vx * dt;
+        p.wob += p.wobSpeed * dt;
+        p.x += (p.vx + Math.sin(p.wob) * p.sway) * dt;
         p.y += p.vy * dt;
-        if (p.ember) {
-          const dr = Math.pow(0.9, dt);
-          p.vx *= dr;
-          p.vy = p.vy * dr - 0.004 * dt;
-        } else {
-          p.vy += 0.09 * dt;
-          const dr = Math.pow(0.96, dt);
-          p.vx *= dr;
-          p.vy *= dr;
-        }
+        p.vy += p.g * dt;
+        const dr = Math.pow(p.drag, dt);
+        p.vx *= dr;
+        p.vy *= dr;
         p.life -= dt;
         if (p.life <= 0) S.parts.splice(i, 1);
       }
 
-      if (!(S.parts.length > 0 || moved > 0 || S.dirty || S.flare > 0.02)) return;
+      if (!(S.parts.length > 0 || moved > 0 || S.dirty)) return;
       S.dirty = false;
 
       ctx.clearRect(0, 0, g.w, g.h);
 
-      /* nodes: pale until the laser reaches them */
+      /* nodes: pale until the dot reaches them */
       g.nodes.forEach((nd, i) => {
         const lit = S.dist >= T.nodeD[i] - 1;
         const halo = ctx.createRadialGradient(nd.x, nd.y, 0, nd.x, nd.y, 24);
@@ -415,86 +420,34 @@ export default function Story() {
         halo.addColorStop(1, "rgba(37,120,255,0)");
         ctx.fillStyle = halo;
         ctx.beginPath();
-        ctx.arc(nd.x, nd.y, 24, 0, Math.PI * 2);
+        ctx.arc(nd.x, nd.y, 24, 0, TAU);
         ctx.fill();
         ctx.fillStyle = lit ? "#1a66ff" : "#8db6ff";
         ctx.beginPath();
-        ctx.arc(nd.x, nd.y, 10, 0, Math.PI * 2);
+        ctx.arc(nd.x, nd.y, 10, 0, TAU);
         ctx.fill();
         ctx.fillStyle = "#fff";
         ctx.beginPath();
-        ctx.arc(nd.x, nd.y, 4, 0, Math.PI * 2);
+        ctx.arc(nd.x, nd.y, 4, 0, TAU);
         ctx.fill();
       });
 
-      /* molten kerf: white-hot at the beam, cooling to orange → red behind it */
-      ctx.globalCompositeOperation = "lighter";
-      ctx.lineCap = "round";
-      const tl = Math.min(170, S.dist);
-      if (tl > 1) {
-        const segs = 20;
-        let a = pointAt(T, S.dist - tl);
-        for (let k = 1; k <= segs; k++) {
-          const b = pointAt(T, S.dist - tl + (tl * k) / segs);
-          const heat = Math.pow(k / segs, 2.2);
-          const rgb = heatRGB(heat);
-          ctx.strokeStyle = `rgba(${rgb},${0.05 + 0.22 * heat})`;
-          ctx.lineWidth = 2 + 5 * heat;
-          ctx.beginPath();
-          ctx.moveTo(a[0], a[1]);
-          ctx.lineTo(b[0], b[1]);
-          ctx.stroke();
-          ctx.strokeStyle = `rgba(${rgb},${0.12 + 0.7 * heat})`;
-          ctx.lineWidth = 0.8 + 1.6 * heat;
-          ctx.beginPath();
-          ctx.moveTo(a[0], a[1]);
-          ctx.lineTo(b[0], b[1]);
-          ctx.stroke();
-          a = b;
-        }
-      }
-
-      /* sparks and embers, coloured by how hot they still are */
+      /* powder grains: normal blending, fade out as they settle */
       for (const p of S.parts) {
-        const heat = Math.max(0, (p.life / p.max) * p.h0);
-        const al = Math.min(0.85, (p.life / p.max) * 1.4);
-        const rgb = heatRGB(heat);
-        if (p.ember) {
-          const fl = 0.6 + Math.random() * 0.4;
-          ctx.fillStyle = `rgba(${rgb},${al * 0.12 * fl})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.w * 2.2, 0, TAU);
-          ctx.fill();
-          ctx.fillStyle = `rgba(${rgb},${al * 0.7 * fl})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.w * (0.7 + heat * 0.6), 0, TAU);
-          ctx.fill();
-          continue;
-        }
-        const sp = Math.hypot(p.vx, p.vy);
-        const k = 1.5 + Math.min(2.5, sp * 0.3);
-        ctx.strokeStyle = `rgba(${rgb},${al * 0.22})`;
-        ctx.lineWidth = p.w * 1.2;
+        const t = p.life / p.max;
+        const al = Math.min(1, t * 1.6) * 0.9;
+        ctx.fillStyle = `rgba(${p.rgb},${al})`;
         ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x - p.vx * k * 1.8, p.y - p.vy * k * 1.8);
-        ctx.stroke();
-        ctx.strokeStyle = `rgba(${rgb},${al})`;
-        ctx.lineWidth = p.w * (0.5 + heat * 0.4);
-        ctx.beginPath();
-        ctx.moveTo(p.x, p.y);
-        ctx.lineTo(p.x - p.vx * k, p.y - p.vy * k);
-        ctx.stroke();
-        if (heat > 0.65) {
-          ctx.fillStyle = `rgba(255,255,255,${al * 0.7})`;
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.w * 0.45, 0, TAU);
-          ctx.fill();
+        ctx.arc(p.x, p.y, p.r, 0, TAU);
+        ctx.fill();
+        if (p.ring) {
+          ctx.strokeStyle = `rgba(37,99,235,${al * 0.35})`;
+          ctx.lineWidth = 0.6;
+          ctx.stroke();
         }
       }
-      ctx.globalCompositeOperation = "source-over";
 
-      /* the moving dot, with a small white-hot point while it is cutting */
+      /* the moving dot */
       const [dx, dy] = pointAt(T, S.dist);
       const glow = ctx.createRadialGradient(dx, dy, 0, dx, dy, 40);
       glow.addColorStop(0, "rgba(37,120,255,.55)");
@@ -511,24 +464,6 @@ export default function Story() {
       ctx.beginPath();
       ctx.arc(dx, dy, 4.6, 0, TAU);
       ctx.fill();
-
-      const fl = S.flare * (0.75 + Math.random() * 0.25);
-      if (fl > 0.03) {
-        ctx.globalCompositeOperation = "lighter";
-        const bloom = ctx.createRadialGradient(dx, dy, 0, dx, dy, 26);
-        bloom.addColorStop(0, `rgba(255,240,220,${0.5 * fl})`);
-        bloom.addColorStop(0.3, `rgba(255,170,80,${0.25 * fl})`);
-        bloom.addColorStop(1, "rgba(255,100,20,0)");
-        ctx.fillStyle = bloom;
-        ctx.beginPath();
-        ctx.arc(dx, dy, 26, 0, TAU);
-        ctx.fill();
-        ctx.fillStyle = `rgba(255,255,255,${0.6 * fl})`;
-        ctx.beginPath();
-        ctx.arc(dx, dy, 3, 0, TAU);
-        ctx.fill();
-        ctx.globalCompositeOperation = "source-over";
-      }
     };
 
     /* only run while the section is on screen */
@@ -557,7 +492,7 @@ export default function Story() {
         @media (prefers-reduced-motion: reduce) { .story-shimmer { animation: none; } }
       `}</style>
 
-      {/* dotted connector + laser dot + sparks (desktop only), behind the cards */}
+      {/* dotted connector + dot + powder (desktop only), behind the cards */}
       <div aria-hidden className="pointer-events-none absolute inset-0 z-0 hidden lg:block">
         {geom && (
           <svg
@@ -579,7 +514,7 @@ export default function Story() {
               </mask>
             </defs>
 
-            {/* the line ahead of the laser */}
+            {/* the line ahead of the dot */}
             <path
               ref={baseRef}
               d={geom.d}
@@ -591,7 +526,7 @@ export default function Story() {
               strokeDasharray="5 8"
             />
 
-            {/* the line behind the laser: brighter, with a soft glow */}
+            {/* the line behind the dot: brighter, with a soft glow */}
             <g mask={`url(#${uid}m)`}>
               <path
                 d={geom.d}
@@ -631,10 +566,51 @@ export default function Story() {
         {/* first screen: text on the left, 2015 card on the right */}
         <div className="grid items-start gap-10 lg:grid-cols-[1fr_60%]">
           <div>
-            <h1 >
-              A Journey of
-              <br />
-              Innovation &amp; Trust
+            <motion.span
+              initial={{ opacity: 0, y: 12 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.6, ease: EASE }}
+              className="inline-flex items-center gap-2 rounded-full bg-white/80 px-3.5 py-1.5 text-[11px] font-bold uppercase tracking-[0.2em] text-brand ring-1 ring-brand/15 backdrop-blur"
+            >
+              <span className="relative flex h-2 w-2">
+                <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-brand/60" />
+                <span className="relative inline-flex h-2 w-2 rounded-full bg-brand" />
+              </span>
+              Our Story · Since 2004
+            </motion.span>
+
+            <h1 className="mt-5 text-[42px] font-extrabold leading-[1.02] tracking-tight text-ink sm:text-[54px] lg:text-[58px] xl:text-[72px]">
+              <HeadLine>A Journey of</HeadLine>
+              <HeadLine delay={0.12}>
+                <span className="bg-brand-600 bg-clip-text text-transparent">
+                  Innovation
+                </span>
+              </HeadLine>
+              <HeadLine delay={0.24}>
+                <span className="text-ink/90">&amp; </span>
+                <span className="relative inline-block">
+                  Trust
+                  <svg
+                    aria-hidden
+                    viewBox="0 0 200 14"
+                    preserveAspectRatio="none"
+                    className="absolute -bottom-1 left-0 h-[0.18em] w-full"
+                  >
+                    <motion.path
+                      d="M2 9 C 40 1, 80 13, 120 6 S 180 4, 198 8"
+                      fill="none"
+                      stroke="#1a66ff"
+                      strokeWidth="4"
+                      strokeLinecap="round"
+                      initial={{ pathLength: 0 }}
+                      whileInView={{ pathLength: 1 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.9, delay: 0.9, ease: EASE }}
+                    />
+                  </svg>
+                </span>
+              </HeadLine>
             </h1>
             <motion.p
               initial={{ opacity: 0, y: 16 }}
@@ -658,10 +634,9 @@ export default function Story() {
           </div>
         </div>
 
-        {/* the rest, with gaps between them: left, right, left */}
         <div className="mt-12 flex flex-col gap-12 lg:mt-32 lg:gap-32">
           {rest.map((t, i) => {
-            const onLeft = i % 2 === 0; // 2nd → left, 3rd → right, 4th → left
+            const onLeft = i % 2 === 0; 
             return (
               <div
                 key={t.year}

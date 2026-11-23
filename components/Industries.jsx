@@ -172,9 +172,8 @@ export default function Industries() {
       id="industries"
       className="relative isolate overflow-hidden bg-gradient-to-b from-[#f4f8fe] via-[#eaf2fd] to-[#f3f8ff] py-12 sm:py-14 lg:py-14"
     >
-      {/* section background image: /public/industries_bg.png */}
       <Image
-        src="/industries_bg.png"
+        src="/industries_bg_.png"
         alt=""
         fill
         sizes="100vw"
@@ -205,7 +204,6 @@ export default function Industries() {
                 fill="none"
                 aria-hidden="true"
               >
-                <path d="M2 11 C 120 2, 280 2, 398 8" stroke="#1456c8" strokeWidth="2.5" strokeLinecap="round" />
               </svg>
             </span>
           </h2>
@@ -433,7 +431,7 @@ export default function Industries() {
           </AnimatePresence>
         </div>
 
-        <div className="mt-7">
+        {/* <div className="mt-7">
           <div className="flex items-center justify-center gap-4">
             <span className="hidden h-px flex-1 bg-gradient-to-r from-transparent to-[#c3d5ee] sm:block" />
             <span className="rounded-full border border-[#d3e3f8] bg-[#e4effc] px-6 py-2 text-[13px] font-bold uppercase tracking-[0.1em] text-[#1456c8]">
@@ -462,7 +460,7 @@ export default function Industries() {
               );
             })}
           </div>
-        </div>
+        </div> */}
       </div>
     </section>
   );

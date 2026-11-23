@@ -4,7 +4,6 @@ import { Check, Crosshair, Eye, Rocket } from "lucide-react";
 
 const EASE = [0.16, 1, 0.3, 1];
 
-/* Edit the wording here. `dark` makes the card the deep-blue one. */
 const items = [
   {
     id: "vision",
@@ -29,6 +28,22 @@ const items = [
   },
 ];
 
+function HeadLine({ children, delay = 0 }) {
+  return (
+    <span className="block overflow-hidden pb-[0.1em]">
+      <motion.span
+        className="block"
+        initial={{ y: "110%", rotate: 3 }}
+        whileInView={{ y: "0%", rotate: 0 }}
+        viewport={{ once: true }}
+        transition={{ duration: 0.9, delay, ease: EASE }}
+      >
+        {children}
+      </motion.span>
+    </span>
+  );
+}
+
 function Card({ item }) {
   const { icon: Icon, dark } = item;
   return (
@@ -44,7 +59,6 @@ function Card({ item }) {
           : "bg-white/90 text-ink shadow-[0_28px_60px_-30px_rgba(10,47,134,0.4)] ring-1 ring-white"
       }`}
     >
-      {/* large outlined word behind the content */}
       <span
         aria-hidden
         className="pointer-events-none absolute -right-3 top-2 select-none text-[84px] font-black leading-none text-transparent sm:text-[110px]"
@@ -167,14 +181,46 @@ export default function VisionMission() {
 
       <div className="container-x relative">
         <div className="mx-auto max-w-2xl text-center">
-          <h1 >
-            Our Vision <span className="text-brand">&amp;</span> Mission
+      
+
+          <h1 className="mt-5 text-[42px] font-extrabold leading-[1.02] tracking-tight text-ink sm:text-[54px] lg:text-[64px]">
+            <HeadLine>
+              Our{" "}
+              <span className="bg-brand-500 bg-clip-text text-transparent">
+                Vision
+              </span>
+            </HeadLine>
+            <HeadLine delay={0.12}>
+              <span className="text-ink/90">&amp; </span>
+              <span className="relative inline-block text-[#8abb88]">
+                Mission
+                <svg
+                  aria-hidden
+                  viewBox="0 0 200 14"
+                  preserveAspectRatio="none"
+                  className="absolute -bottom-1 left-0 h-[0.18em] w-full"
+                >
+                  <motion.path
+                    d="M2 9 C 40 1, 80 13, 120 6 S 180 4, 198 8"
+                    fill="none"
+                    stroke="#b5b5b5"
+                    strokeWidth="4"
+                    strokeLinecap="round"
+                    initial={{ pathLength: 0 }}
+                    whileInView={{ pathLength: 1 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.9, delay: 0.8, ease: EASE }}
+                  />
+                </svg>
+              </span>
+            </HeadLine>
           </h1>
+
           <motion.p
             initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ delay: 0.25 }}
+            transition={{ delay: 0.35 }}
             className="mt-4 text-[15px] leading-relaxed text-ink/65"
           >
             Where we are headed, and how we get there with every customer we work with.

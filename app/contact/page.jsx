@@ -48,7 +48,7 @@ export default function ContactPage() {
         title="Contact"
         highlight="Us"
         description="Tell us the product, grade and quantity you need and our team will respond with pricing and availability."
-        bannerImage="/images/why.png"
+        bannerImage="/industries_bg_.png"
       />
 
 <section className="mx-auto max-w-[1440px] px-5 py-10 sm:px-8 sm:py-14 lg:px-10">

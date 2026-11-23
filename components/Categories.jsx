@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 import Link from "next/link";
 import {
@@ -52,6 +52,8 @@ const cats = categories.map((c) => ({
 }));
 
 const H = 430; // stage height (px)
+const STEP_PX = 60; // drag distance needed to advance ONE card (one card per drag)
+const DRAG_THRESHOLD = 6; // px of movement before a press counts as a drag
 
 // 4 visible cards; the big featured (active) card sits on the LEFT.
 // Any further categories wait off-stage (invisible) and rotate in as the slider moves.
@@ -109,6 +111,7 @@ function CatCard({ c, index = 0, active = false }) {
     <Link
       href={`/products?category=${c.id}`}
       aria-label={c.lines.join(" ").trim()}
+      draggable={false}
       className={`group relative block h-full w-full overflow-hidden rounded-[28px] transition-all duration-500 ${
         active
           ? "shadow-[0_34px_60px_-22px_rgba(14,58,93,0.65)]"
@@ -121,6 +124,7 @@ function CatCard({ c, index = 0, active = false }) {
         <Img
           src={c.img}
           alt={c.lines.join(" ").trim()}
+          draggable={false}
           className={`h-full w-full object-cover transition duration-700 group-hover:scale-110 ${
             active ? "scale-105" : "scale-100 saturate-[0.85]"
           }`}
@@ -223,6 +227,10 @@ export default function Categories() {
   const n = cats.length;
   const [active, setActive] = useState(0); // first category starts as the big main card
   const [paused, setPaused] = useState(false);
+  const [dragging, setDragging] = useState(false);
+
+  // drag state lives in a ref so pointer-move doesn't re-render on every pixel
+  const drag = useRef({ down: false, moved: false, stepped: false, x: 0 });
 
   const go = (d) => setActive((a) => (a + d + n) % n);
 
@@ -231,6 +239,41 @@ export default function Categories() {
     const t = setInterval(() => setActive((a) => (a + 1) % n), 4500);
     return () => clearInterval(t);
   }, [paused, n]);
+
+  /* ---------- drag handlers (desktop stage) ---------- */
+  const onPointerDown = (e) => {
+    if (e.pointerType === "mouse" && e.button !== 0) return;
+    drag.current = { down: true, moved: false, stepped: false, x: e.clientX };
+  };
+
+  const onPointerMove = (e) => {
+    const d = drag.current;
+    if (!d.down) return;
+    const dx = e.clientX - d.x;
+
+    if (!d.moved && Math.abs(dx) > DRAG_THRESHOLD) {
+      d.moved = true;
+      setDragging(true);
+      e.currentTarget.setPointerCapture?.(e.pointerId);
+    }
+
+    // drag left → next card, drag right → previous card.
+    // Exactly ONE card per drag gesture, so fast drags can never skip cards.
+    // The user must release and drag again to advance further.
+    if (d.moved && !d.stepped && Math.abs(dx) >= STEP_PX) {
+      d.stepped = true;
+      go(dx < 0 ? 1 : -1);
+    }
+  };
+
+  const endDrag = () => {
+    drag.current.down = false;
+    setDragging(false);
+    // keep `moved` true until after the trailing click event has fired
+    setTimeout(() => {
+      drag.current.moved = false;
+    }, 0);
+  };
 
   return (
     <section
@@ -295,8 +338,22 @@ export default function Categories() {
             {/* desktop */}
             <div className="relative hidden lg:block">
               <div
-                className="relative"
-                style={{ height: H, width: "calc(100% - 64px)" }}
+                className={`relative select-none ${
+                  dragging ? "cursor-grabbing [&_*]:!cursor-grabbing" : "cursor-grab"
+                }`}
+                style={{ height: H, width: "calc(100% - 64px)", touchAction: "pan-y" }}
+                onPointerDown={onPointerDown}
+                onPointerMove={onPointerMove}
+                onPointerUp={endDrag}
+                onPointerCancel={endDrag}
+                onDragStart={(e) => e.preventDefault()} /* stops native image/link ghost-drag */
+                onClickCapture={(e) => {
+                  if (drag.current.moved) {
+                    /* swallow the click that ends a drag */
+                    e.preventDefault();
+                    e.stopPropagation();
+                  }
+                }}
               >
                 {cats.map((c, i) => {
                   const pos = (i - active + ACTIVE_POS + n) % n;

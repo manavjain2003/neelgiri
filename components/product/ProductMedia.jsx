@@ -2,11 +2,9 @@ import Img from "@/components/ui/Img";
 import { categoryById } from "@/lib/products";
 import { iconFor } from "./categoryIcons";
 
-/*
-  Product photo on a clean white stage. Products without a photo (the grades that are
-  listed on neelgirichemicals.com without images) get a branded placeholder instead.
-*/
-export default function ProductMedia({ product, className = "", padding = "p-5" }) {
+
+export default function ProductMedia({ product, image , className = "", padding = "p-5" }) {
+  const src = image ?? product.image;
   if (product.images?.length) {
     return (
       <Img

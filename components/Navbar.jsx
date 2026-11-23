@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { ArrowRight, ChevronDown, Menu, X } from "lucide-react";
 import Logo from "@/components/ui/Logo";
@@ -13,11 +15,18 @@ const links = [
   { label: "Contact", id: "contact", link: "/contact" },
 ];
 
+function isActive(pathname, href) {
+  if (!pathname) return false;
+  const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+  if (href === "/") return path === "/";
+  return path === href || path.startsWith(`${href}/`);
+}
+
 export default function Navbar() {
+  const pathname = usePathname();
   const [open, setOpen] = useState(false);
   const [quoteOpen, setQuoteOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
-  const [active, setActive] = useState("home");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 24);
@@ -27,19 +36,8 @@ export default function Navbar() {
   }, []);
 
   useEffect(() => {
-    const obs = new IntersectionObserver(
-      (entries) =>
-        entries.forEach((e) => e.isIntersecting && setActive(e.target.id)),
-      { rootMargin: "-45% 0px -50% 0px" }
-    );
-
-    links.forEach((l) => {
-      const el = document.getElementById(l.id);
-      if (el) obs.observe(el);
-    });
-
-    return () => obs.disconnect();
-  }, []);
+    setOpen(false);
+  }, [pathname]);
 
   return (
     <motion.header
@@ -56,28 +54,31 @@ export default function Navbar() {
         <Logo />
 
         <nav className="hidden items-center gap-7 lg:flex xl:gap-9">
-          {links.map((l) => (
-            <a
-              key={l.label}
-              href={l.link}
-              className={`relative flex items-center gap-1 py-1 text-[15px] xl:text-[16px] font-semibold transition-colors ${
-                active === l.id
-                  ? "text-white"
-                  : "text-white/80 hover:text-white"
-              }`}
-            >
-              {l.label}
+          {links.map((l) => {
+            const current = isActive(pathname, l.link);
+            return (
+              <Link
+                key={l.label}
+                href={l.link}
+                aria-current={current ? "page" : undefined}
+                className={`relative flex items-center gap-1 py-1 text-[15px] xl:text-[16px] font-semibold transition-colors ${
+                  current ? "text-white" : "text-white/70 hover:text-white"
+                }`}
+              >
+                {l.label}
 
-              {l.dropdown && <ChevronDown className="h-4 w-4" />}
+                {l.dropdown && <ChevronDown className="h-4 w-4" />}
 
-              {active === l.id && (
-                <motion.span
-                  layoutId="nav-underline"
-                  className="absolute -bottom-0.5 left-0 right-0 h-[2px] rounded-full bg-gradient-to-r from-white to-white/60"
-                />
-              )}
-            </a>
-          ))}
+                {current && (
+                  <motion.span
+                    layoutId="nav-underline"
+                    transition={{ type: "spring", stiffness: 380, damping: 32 }}
+                    className="absolute -bottom-1 left-0 right-0 h-[3px] rounded-full bg-gradient-to-r from-[#4C8DFF] to-white"
+                  />
+                )}
+              </Link>
+            );
+          })}
         </nav>
 
         {/* CTA & Mobile Toggle */}
@@ -113,19 +114,31 @@ export default function Navbar() {
             className="overflow-hidden border-t border-white/10 bg-gradient-to-b from-[#0a1628]/95 via-[#132337]/95 to-[#1a2f4a]/95 backdrop-blur-xl lg:hidden"
           >
             <div className="flex flex-col gap-1 px-5 py-4">
-              {links.map((l, i) => (
-                <motion.a
-                  key={l.label}
-                  href={`#${l.id}`}
-                  onClick={() => setOpen(false)}
-                  initial={{ x: -20, opacity: 0 }}
-                  animate={{ x: 0, opacity: 1 }}
-                  transition={{ delay: i * 0.04 }}
-                  className="rounded-lg px-3 py-3 text-base font-semibold text-white/90 hover:bg-white/10"
-                >
-                  {l.label}
-                </motion.a>
-              ))}
+              {links.map((l, i) => {
+                const current = isActive(pathname, l.link);
+                return (
+                  <motion.div
+                    key={l.label}
+                    initial={{ x: -20, opacity: 0 }}
+                    animate={{ x: 0, opacity: 1 }}
+                    transition={{ delay: i * 0.04 }}
+                  >
+                    <Link
+                      href={l.link}
+                      onClick={() => setOpen(false)}
+                      aria-current={current ? "page" : undefined}
+                      className={`flex items-center justify-between rounded-lg px-3 py-3 text-base font-semibold ${
+                        current
+                          ? "bg-white/10 text-white"
+                          : "text-white/80 hover:bg-white/10 hover:text-white"
+                      }`}
+                    >
+                      {l.label}
+                      {current && <span className="h-2 w-2 rounded-full bg-[#4C8DFF]" />}
+                    </Link>
+                  </motion.div>
+                );
+              })}
 
               <button
                 type="button"
@@ -143,7 +156,6 @@ export default function Navbar() {
         )}
       </AnimatePresence>
 
-      {/* Quote Modal (portaled to document.body, so header blur/sticky won't clip it) */}
       <QuoteModal open={quoteOpen} onClose={() => setQuoteOpen(false)} />
     </motion.header>
   );

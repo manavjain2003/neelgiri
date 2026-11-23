@@ -59,7 +59,7 @@ export default function AboutPage() {
         title="About"
         highlight="Us"
         description="Delivering quality, driving innovation and building trust – chemical solutions for industry, supplied from New Delhi since 2004."
-        bannerImage="/images/hero_1.png"
+        bannerImage="/images/fp.png"
       />
 
       {/* Intro */}
